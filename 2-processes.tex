@@ -1,0 +1,362 @@
+\section{Stochastic processes}
+
+\subsection{Basic notions}
+Let $(\Omega, \mathcal{F}, \PP)$ be a probability space. At the most basic level, a \textbf{stochastic process} is simply any collection of random variables $\{X_\alpha\}_{\alpha \in I}$ (where $I$ is some indexing set) defined on $(\Omega, \mathcal{F}, \PP)$. However, such a general definition is not useful, and we would like to have some more structure. For practical applications, a stochastic process should capture the evolution of some random phenomenon, and it is reasonable to equip our probability space with some way of tracking the `information' about the process available to us at a given time. We thus introduce the following fundamental definition.
+
+\begin{definition}
+Let $(\Omega, \mathcal{F})$ be a measurable space, and $(\mathbb{T}, \preceq)$ a totally ordered set. A \textbf{filtration} is a family of $\sigma$-algebras $(\mathcal{F}_t)_{t \in\mathbb{T}}$ such that
+\begin{enumerate}[\upshape (i)]
+    \item $\mathcal{F}_t\subseteq\mathcal{F}$ for all $t\in\mathbb{T}$;
+    \item $\mathcal{F}_s \subseteq\mathcal{F}_t$ if $s \preceq t$.
+\end{enumerate}
+\end{definition}
+Thus a filtration is an \emph{increasing} family of $\sigma$-algebras. In most applications, we consider $\mathbb{T}$ to be $\NN$ (this is the case for `discrete' stochastic processes), $[0, \infty)$ or a compact interval $[0, T]$, all equipped with the usual ordering $\le$ inherited from $\RR$.
+
+If a probability space $(\Omega,\mathcal{F},\PP)$ admits a filtration $(\mathcal{F}_t)_{t\ge 0}$, we call it a \textbf{filtered probability space}. We can now introduce a very general yet useful definition of a stochastic process.
+\begin{definition}
+    Let $(\Omega, \mathcal{F}, (\mathcal{F}_t)_{t\ge 0}, \PP)$ be a filtered probability space, and let $(E,\mathcal{G})$ be a measurable space. A \textbf{stochastic process} $(X_t)_{t \ge 0}$ with values in $E$ is a family of random variables $X_t :\Omega\to E$. The process is said to be $\mathcal{F}_t$-\textbf{adapted}, or simply \textbf{adapted}, if $X_t$ is $\mathcal{F}_t$-measurable for every $t \ge 0$. (In particular, $X_t$ is $\mathcal{F}_s$-measurable for all $0 \le s \le t$).
+\end{definition}
+
+The concept of adaptedness heuristically means that we do not need to `see into the future' in order to know everything about the random process at time $t$.
+
+\begin{remark}[On notation]
+    We follow the usual convention of denoting the `time' parameter with a subscript. However, we will sometimes write $X(t)$ instead of $X_t$ if there is possible confusion with subscripts for partial derivatives.
+\end{remark}
+
+We have introduced stochastic processes as families of random variables indexed by a time variable $t$, i.e.\ for each $t\ge 0$ we obtain a random variable $X(t,\cdot):\Omega\to E$. However, it is equally valid and very useful to view a stochastic process as a collection of \emph{paths} in the target space $E$. From this viewpoint, for each sample point $\omega\in\Omega$, we obtain a function
+\begin{equation*}
+    [0,\infty) \ni t\mapsto X(t,\omega)\in E.
+\end{equation*}
+These maps are then called the \textbf{sample paths} or \textbf{trajectories} of the process. A large part of stochastic analysis involves understanding fine properties of sample paths of Brownian motion.
+
+We introduce two filtrations that are ubiquitous in this subject.
+\begin{definition}
+Let $(X_t)_{t \ge 0}$ be a stochastic process. The \textbf{natural filtration} of the process is defined to be
+\begin{equation*}
+    \mathcal{F}_t^X := \sigma(X_s : 0 \le s \le t).
+\end{equation*}
+Any stochastic process is automatically adapted to its natural filtration.
+
+Now let $(\mathcal{F}_t)_{t\ge 0}$ be any filtration. For each $t\ge 0$, we define
+\begin{equation*}
+    \mathcal{F}_{t+} := \bigcap_{u > t} \mathcal{F}_u.
+\end{equation*}
+This is sometimes called the $\sigma$-algebra of \textbf{events immediately after $t$}.
+\end{definition}
+
+The idea of $\mathcal{F}_{t+}$ is that it captures the information available to us if we could `see infinitesimally into the future'. This sounds quite strange at the moment, but it turns out to be a rather important technicality in the study of stochastic processes with \emph{continuous} sample paths. Clearly $\mathcal{F}_t\subseteq\mathcal{F}_{t+}$, but it may be surprising that in general, $\mathcal{F}_{t+}\ne\mathcal{F}_t$. The following example is rather artificial but instructive.
+\begin{example}
+Consider the sample space $\Omega = \{0, 1\}$ with $\sigma$-algebra $\mathcal{F} = \{ \emptyset, \Omega, \{0\}, \{1\} \}$. Define a stochastic process by $X_t = 0$ for all $t \in [0, 1)$. At $t=1$, a fair coin is tossed, and we define $X_t(\omega) = 1-t$ if $\omega = 0$, corresponding to tails, and $X_t(\omega) = t-1$ if $\omega = 1$, corresponding to heads. Let $\mathcal{F}_t$ be the natural filtration. It is easy to check that for $t \in [0,1]$, we have $\mathcal{F}_t = \mathcal{F}_1 = \{ \emptyset, \Omega \}$. However for $t > 1$, $\mathcal{F}_t = \mathcal{F}$. Hence $\mathcal{F}_1\ne\mathcal{F}_t$ for all $t>1$, which implies $\mathcal{F}_{t+}\ne\mathcal{F}$.
+\end{example}
+
+Filtrations in which $\mathcal{F}_t$ does coincide with $\mathcal{F}_{t+}$ play an important role in stochastic analysis.
+\begin{definition}
+\label{def:usual}
+We say a filtration $(\mathcal{F}_t)_{t\ge 0}$ is \textbf{right-continuous} if $\mathcal{F}_t = \mathcal{F}_{t+}$ for all $t\ge 0$.
+
+Given a filtration on a probability space $(\Omega,\mathcal{F},\PP)$, we say that $(\mathcal{F}_t)_{t \ge 0}$ is \textbf{complete} if each $\mathcal{F}_t$ contains all sets of probability 0. If $(\mathcal{F}_t)_{t\ge 0}$ on $(\Omega,\mathcal{F},\PP)$ is right-continuous and complete, we say that the filtration satisfies the \textbf{usual conditions}.
+\end{definition}
+
+\textcolor{red}{add some technical notes about completeness of filtration?}
+
+\subsection{Stopping times}
+We continue with the natural interpretation that $t$ represents the flow of time, and the filtration $(\mathcal{F}_t)_{t\ge 0}$ keeps track of the information available to us about the random process $X(t)$ at time $t$. Quite often we will be interested in the \emph{first time} a phenomenon occurs: the first time a stock price rises above (or falls below) a certain value, the first time a solution to a stochastic differential equation exits an interval $J\subseteq\RR$, and so on. This time will, of course, be a random variable $\tau:\Omega\to [0,\infty]$. It is intuitively clear that the event $(\tau\le t)$ --- whether the phenomenon has occurred before time $t$ --- should be part of the available information. This discussion motivates the definition of a \emph{stopping time}.
+
+\begin{definition}
+    Let $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$ be a filtered probability space. A random variable $\tau:\Omega\to [0,\infty]$ is called a \textbf{stopping time} if $(\tau\le t)\in\mathcal{F}_t$ for all $t\ge 0$. Moreover, $\tau$ is called an \textbf{optional time} if $(\tau<t)\in\mathcal{F}_t$ for all $t\ge 0$.
+\end{definition}
+
+\begin{remark}
+    (i): Note that the definition of stopping times depends on the filtration!
+    
+    (ii): For stochastic processes in discrete time $(X_n)_{n\in\NN}$, stopping times are $\NN$-valued random variables. In that case, it suffices to check that the event $(\tau=n)\in\mathcal{F}_n$ for each $n\in\NN$.
+\end{remark}
+
+\begin{proposition}
+\label{prop:stop-opt}
+    Every stopping time is an optional time. If the filtration $(\mathcal{F}_t)_{t\ge 0}$ is right-continuous, then every optional time is a stopping time.
+\end{proposition}
+
+\begin{proof}
+    Assume that $\tau$ is a stopping time. Then
+    \begin{equation*}
+        (\tau <t) = \bigcup_{n\in\NN} (\tau\le t-\tfrac{1}{n}) \in\mathcal{F}_t
+    \end{equation*}
+    since $(\tau\le t-\frac{1}{n})\in\mathcal{F}_{t-1/n}\subseteq\mathcal{F}_t$ for all $n\in\NN$.
+
+    Now assume that $\tau$ is an optional time, and that the filtration is right-continuous. Then
+    \begin{equation*}
+        (\tau\le t) = \bigcap_{n\in\NN}(\tau<t+\tfrac{1}{n}) \in\bigcap_{n\in\NN}\mathcal{F}_{t+1/n} = \mathcal{F}_{t+} = \mathcal{F}_t,
+    \end{equation*}
+    hence $\tau$ is a stopping time.
+\end{proof}
+
+The following facts are often used in calculations involving stopping times.
+\begin{proposition}
+\label{prop:stop-facts}
+Let $(\Omega,\mathcal{F},\PP)$ be a probability space with a filtration $(\mathcal{F}_t)_{t\ge 0}$.
+\begin{enumerate}[\upshape (i)]
+    \item Fix $t_0\ge 0$. If $\tau = t_0$ almost surely, then $\tau$ is a stopping time.
+    
+    \item If $\tau_1, \tau_2$ are stopping times, then $\tau_1 \wedge \tau_2$, $\tau_1 \vee \tau_2$, and $\tau_1+\tau_2$ are stopping times.
+    
+    \item If $(\tau_n)_{n \ge 1}$ is an increasing sequence of stopping times, i.e.\ $\tau_n \le \tau_{n+1}$ almost surely, then $\tau := \lim_{n \to \infty} \tau_n$ is a stopping time. The same conclusion holds if $\tau_n$ is a decreasing sequence, $\tau_n\downarrow\tau$, and the filtration is right-continuous.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i): This is trivial.
+
+(ii): Observe that $(\tau_1 \wedge \tau_2 \le t) = (\tau_1 \le t) \cap (\tau_2 \le t) \in\mathcal{F}_t$, and similarly $(\tau_1 \vee \tau_2 \le t) = (\tau_1 \le t) \cup (\tau_2 \le t) \in\mathcal{F}_t$.
+
+To show that $\tau_1+\tau_2$ is a stopping time, consider the decomposition
+\begin{align*}
+    (\tau_1+\tau_2>t) &= (\tau_1=0, \tau_2>t)\cup (0<\tau_1<t, \tau_1+\tau_2>t)\cup (\tau_1>t, \tau_2=0)\cup (\tau_1\ge t, \tau_2>0) \\
+    &=: A_1\cup A_2\cup A_3\cup A_4.
+\end{align*}
+The events $A_1$ and $A_3$ clearly belong to $\mathcal{F}_t$. The event $A_3$ can be rewritten as
+\begin{equation*}
+    A_3 = (\tau_1\ge t)\cap (\tau_2>0) = (\tau_1 < t)^c \cap (\tau_2\le 0)^c \in\mathcal{F}_t
+\end{equation*}
+where we have used Proposition~\ref{prop:stop-opt} to deduce that $(\tau_1<t)\in\mathcal{F}_t$ (and thus its complement also belongs to $\mathcal{F}_t$). Finally, the event $A_2$ can be rewritten as
+\begin{equation*}
+    A_2 = \bigcup_{q\in\QQ\cap (0,t)}(q<\tau_1<t)\cap (t-q<\tau_2),
+\end{equation*}
+and we leave it to the reader to verify carefully that $A_2\in\mathcal{F}_t$. Hence $(\tau_1+\tau_2>t)\in\mathcal{F}_t$, which implies that the complementary event $(\tau_1+\tau_2\le t)$ also belongs to $\mathcal{F}_t$.
+
+(iii): Fix $t > 0$, and consider the event $(\tau\le t)$. If the sequence $(\tau_n)$ is increasing, we have
+\begin{equation*}
+    (\lim_{n \to \infty} \tau_n \le t) = \bigcap_{n \ge 1} (\tau_n \le t) \in \mathcal{F}_t
+\end{equation*}
+and hence $\tau$ is a stopping time. If the filtration is right-continuous and $\tau_n\downarrow\tau$, then
+\begin{equation*}
+    (\tau<t) = \bigcup_{n\in\NN}(\tau_n<t)\in\mathcal{F}_t,
+\end{equation*}
+see the first calculation of Proposition~\ref{prop:stop-opt}. This shows that $\tau$ is an \emph{optional} time. As the filtration is right-continuous, we conclude from Proposition~\ref{prop:stop-opt} that $\tau$ is a stopping time.
+\end{proof}
+
+Now we will formalise the notion of `sampling at a random time'.
+\begin{definition}
+Let $(\mathcal{F}_t)_{t \ge 0}$ be a filtration on a probability space $(\Omega,\mathcal{F},\PP)$, and let $\tau$ be an $\mathcal{F}_t$-stopping time. We define the \textbf{stopped $\sigma$-algebra}\footnote{ This is my own term. There does not seem to be a consensus for the name of this construction. In~\cite{KS}, one finds the accurate but highly inconvenient name `$\sigma$-field of events determined prior to the stopping time $\tau$.'} $\mathcal{F}_{\tau}$ by
+\begin{equation*}
+    A \in \mathcal{F}_\tau \overset{\text{def.}}{\iff} A \cap (\tau \le t) \in\mathcal{F}_t \quad \text{for all } t\ge 0.
+\end{equation*}
+\end{definition}
+
+The definition is reasonable on intuitive grounds; however, we ought to show that $\mathcal{F}_\tau$ really is a $\sigma$-algebra. This is left as a simple exercise for the reader. Note that $\tau$ itself is $\mathcal{F}_\tau$-measurable. Indeed, for any $s,t\ge 0$, we have
+\begin{equation*}
+    (\tau\le s)\cap (\tau\le t) = (\tau\le s\wedge t)\in\mathcal{F}_{s\wedge t}\subseteq\mathcal{F}_t,
+\end{equation*}
+which proves the claim.
+
+\begin{exercise}[Approximating a stopping time from above]
+\label{exer:stop-approx}
+    Let $T$ be a $\mathcal{F}_t$-stopping time defined on a filtered probability space $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$. 
+    \begin{enumerate}[(i)]
+        \item If $S$ is an $\mathcal{F}_T$-measurable random variable with values in $[0,\infty]$ such that $T\le S$ a.s., then $S$ is an $\mathcal{F}_t$-stopping time.
+
+        \item Show that the random variables
+        \begin{equation*}
+            T_n := \sum_{k=0}^\infty \frac{k+1}{2^n}\mathbf{1}_{(k2^{-n}<T\le (k+1)2^{-n})} + \infty\cdot\mathbf{1}_{(T=\infty)}, \quad n=1,2,3,\ldots
+        \end{equation*}
+        are $\mathcal{F}_t$-stopping times such that $T_n\downarrow T$ as $n\to\infty$.
+    \end{enumerate}
+\end{exercise}
+
+% If $t>0$ is fixed and $0\le x+y<t$, then there exists $q\in\QQ\cap (0,t)$ such that $x<q<t-y$. Thus
+% \begin{align*}
+%     (\tau_1+\tau_2 <t) &= \{\omega\in\Omega : \exists q\in\QQ\cap (0,t) \text{ such that } \tau_1(\omega)<q, \tau_2(\omega)<t-q\} \\
+%     &= \bigcup_{q\in\QQ\cap (0,t)}(\tau_1 < q)\cap (\tau_2 < t-q).
+% \end{align*}
+% By the right-continuity of the filtration and Proposition~\ref{prop:stop-opt}, each of the events $(\tau_1 < q)$ and $(\tau_2 < t-q)$ belong to $\mathcal{F}_t$. Hence $(\tau_1+\tau_2 <t)\in\mathcal{F}_t$, and using Proposition~\ref{prop:stop-opt} again, we deduce $(\tau_1+\tau_2 \le t)\in\mathcal{F}_t$.
+
+\subsection{A taste of martingale theory}
+Martingales are one of the fundamental tools of modern analysis and probability theory, and originated in the study of gambling strategies. For the moment, we will present some elementary facts, followed by some key results of an analytic nature. We will have much more to say about martingales when we introduce stochastic integrals.
+
+\begin{definition}
+Let $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$ be a filtered probability space. A stochastic process $(M_t)_{t\ge 0}$ is a \textbf{martingale} if:
+\begin{itemize}
+    \item[(M1)] $(M_t)_{t\ge 0}$ is $\mathcal{F}_t$-adapted;
+    \item[(M2)] $\EE|M_t| <\infty$ for each $t\ge 0$;
+    \item[(M3)] (`Fair game') $\EE(M_t|\mathcal{F}_s) = M_s$ for all $0\le s\le t$.
+\end{itemize}
+If $(M_t)_{t \ge 0}$ is a stochastic process such that (M1), (M2) hold, then
+\begin{itemize}
+    \setlength\itemindent{10pt}\item[(M3$^+$)] if $\EE(M_t|\mathcal{F}_s) \ge M_s$ for all $0\le s\le t$, then $(M_t)_{t\ge 0}$ is a \textbf{submartingale} ('winning game').
+
+    \setlength\itemindent{10pt}\item[(M3$^-$)] if $\EE(M_t|\mathcal{F}_s) \le M_s$ for all $0\le s\le t$, then $(M_t)_{t\ge 0}$ is a \textbf{supermartingale} (`losing game').
+\end{itemize}
+\end{definition}
+To emphasise the dependence on the filtration, we can say that $M_t$ is an $\mathcal{F}_t$-martingale (e.g.\ it could be that there is another filtration $(\mathcal{G})_{t\ge 0}$ on the same probability space, but $M_t$ need not be adapted to $\mathcal{G}_t$).
+
+Of course, the above definitions can be reformulated for discrete time stochastic processes $(M_n)_{n\in\NN}$. Obviously, $M_t$ is a supermartingale if and only if $-M_t$ is a submartingale, and $M_t$ is a martingale if and only if $M_t$ is both a sub- and supermartingale. These terms actually derive from classical potential theory, in the study of harmonic, sub- and superharmonic functions.
+
+\begin{proposition}
+Let $(M_t,\mathcal{F}_t)$ be a martingale. The following assertions hold.
+\begin{enumerate}[\upshape (i)]
+    \item $\EE(M_t) = \EE(M_0)$ for all $t > 0$.
+    \item If $(N_t,\mathcal{F}_t)$ is another martingale (note that $N_t$ is adapted to the same filtration!), then $aM_t + bN_t$ is also a martingale with respect to $\mathcal{F}_t$.
+    \item If $f:\RR\to\RR$ is a convex (resp.\ concave) function such that $\EE|f(X)| <\infty$, then $(f(M_t),\mathcal{F}_t)$ is a submartingale (resp.\ supermartingale).
+\end{enumerate}
+\end{proposition}
+We leave the easy proofs as exercises: (i) follows from (M3) and the tower property of conditional expectation, (ii) is obvious, and (iii) is proved using the conditional Jensen inequality.
+
+\begin{exercise}
+Let $X:\Omega\to\RR$ be a fixed, integrable random variable on the filtered probability space $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$. Show that $M_t:=\EE(X|\mathcal{F}_t)$ defines an $\mathcal{F}_t$-martingale.
+\end{exercise}
+
+Martingales have a wide range of applications in mathematical analysis, probability, economics and finance, well beyond their initial purpose for the study of gambling strategies. We recommend~\cite[Chapter 15]{Wil} as a tasting menu. From the stochastic analysis perspective, a particularly important feature of martingales is that they `co-operate' well with stopping times. The following theorem of Doob is fundamental.
+
+\begin{theorem}[Optional sampling theorem]
+\label{thm:doob-stop}
+    Let $(\Omega,\mathcal{F},\PP)$ be a probability space with right-continuous filtration $(\mathcal{F}_t)_{t\ge 0}$, and suppose $(M_t)_{t\ge 0}$ is an $\mathcal{F}_t$-(sub)martingale whose sample paths are almost surely right-continuous. If $S,T$ are stopping times such that $S\le T<\infty$ almost surely, then
+    \begin{equation}
+        \EE(M_T|\mathcal{F}_S) \,(\ge)\, = M_S \quad\text{almost surely}.
+    \end{equation}
+\end{theorem}
+
+An easy but important corollary is the following:
+\begin{corollary}
+\label{cor:mart-is-local}
+Let $(\mathcal{F}_t)_{t \ge 0}$ be a right-continuous filtration, and suppose $(M_t)_{t\ge 0}$ is a continuous martingale adapted to $\mathcal{F}_t$. For any stopping time $\tau$, the \emph{stopped process} $(M^\tau_t)_{t\ge 0}$, defined by
+\begin{equation*}
+    M^\tau_t := M_{t \wedge \tau},
+\end{equation*}
+is an $\mathcal{F}_t$-martingale.
+\end{corollary}
+
+\begin{proof}
+Let $s < t$. Since $t\wedge\tau$ is a stopping time for all $t\ge 0$, it follows that
+\begin{equation*}
+    \EE(M_{t\wedge\tau} | \mathcal{F}_{s\wedge\tau}) = M_{s\wedge\tau}
+\end{equation*}
+by Theorem~\ref{thm:doob-stop}.
+\end{proof}
+
+\textcolor{red}{To include: Doob maximal and $L^p$ inequalities}
+
+\subsection{A technical digression}
+We consider the general problem of constructing an appropriate probability space $(\Omega,\mathcal{F},\PP)$, that should, heuristically speaking, contain `all the information' about a stochastic process. What does it take, then, to `know' a stochastic process? Recall that we can view a stochastic process $(X(t))_{t\ge 0}$ as a collection of \emph{paths} or \emph{trajectories}. Let us consider just the case where our process takes values in $\RR$. Our candidate sample space is
+\begin{equation*}
+    \Omega = \RR^{[0,\infty)} := \{ \text{all functions } f : [0, \infty) \to\RR \}.
+\end{equation*}
+
+Fix $n\in\NN$ and moments in time $0 \le t_1 < t_2 < \ldots < t_n$, and corresponding intervals $I_1, I_2, \ldots, I_n$ (the type of interval does not matter). If we `know' the process, then we should be able to determine the \emph{finite dimensional} distribution
+\begin{equation*}
+    \PP(X(t_1)\in I_1, X(t_2)\in I_2, \ldots, X(t_n)\in I_n).
+\end{equation*}
+This is a very practical constraint, since in real-world applications, we can only ever perform finitely many observations of a random process. Thus we require that all sets of the form $\prod_{i=1}^n (X(t_j)\in I_j)$ are measurable, for all $n\in\NN$ and choices of intervals $I_1, \ldots, I_n$. For each finite ordered collection $[t]^n:=(t_1,\ldots,t_n)$ of non-negative real numbers and corresponding intervals $I_1, \ldots, I_n$, define the \textbf{cylinder set}
+\begin{equation}
+    C_{[t]^n}(I_1\times I_2 \times\cdots\times I_n) := \{ f : [0, \infty) \to\RR \,|\, f(t_k) \in I_k, 1 \le k\le n\}.
+\end{equation}
+Then we consider the $\sigma$-algebra
+\begin{equation*}
+    \sigma(I_1\times I_2 \times\cdots\times I_n : I_k \subseteq\RR \text{ intervals}),
+\end{equation*}
+but this is exactly $\mathscr{B}(\RR^n)$, the Borel $\sigma$-algebra on $\RR^n$ (this is essentially the higher-dimensional analogue of Exercise~\ref{exer:Borel-gen}).
+
+Let $\mathcal{T}$ denote the set of all finite ordered collections $[t]$ of distinct, non-negative real numbers. Suppose that for each $[t]\in\mathcal{T}$, we have a probability measure $Q_{[t]}$ on $(\RR^n,\mathscr{B}(\RR^n))$. For every $n\in\NN$ and every $[t]^n=(t_1,\ldots,t_n)\in\mathcal{T}$, we define
+\begin{equation*}
+    \PP(C_{[t]^n}(I_1\times I_2\times\cdots\times I_n)) := Q_{[t]^n}(I_1\times I_2\times\cdots\times I_n)
+\end{equation*}
+for each cylinder set. The measure $Q_{[t]^n}$ can then be extended to all Borel sets $B\subseteq\RR^n$. The collection of probability measures $(Q_{[t]})_{[t]\in\mathcal{T}}$ is called a \textbf{family of finite-dimensional distributions}.
+\begin{definition}
+    A family $(Q_{[t]})_{[t]\in\mathcal{T}}$ of finite-dimensional distributions is called \textbf{consistent} if the following conditions hold:
+    \begin{enumerate}[(i)]
+        \item if $[\pi(t)]:=(t_{\pi(1)},\ldots,t_{\pi(n)})$ is a permutation of $[t]$, where $\pi\in\mathrm{Sym}(n)$ denotes a permutation on $n$ letters, then for any $B_i\in\mathscr{B}(\RR), i=1,\ldots,n$, we have
+        \begin{equation*}
+            Q_{[t]}(B_1\times B_2\times\cdots\times B_n) = Q_{[\pi(t)]}(B_{\pi(1)}\times B_{\pi(2)}\times\cdots\times B_{\pi(n)}).
+        \end{equation*}
+
+        \item if $[t]=(t_1,\ldots, t_n)$ with $n\ge 2$ and $[s]=(t_1,\ldots,t_{n-1})$ and $A\in\mathscr{B}(\RR^{n-1})$, then
+        \begin{equation*}
+            Q_{[t]}(A\times\RR) = Q_{[s]}(A).
+        \end{equation*}
+    \end{enumerate}
+\end{definition}
+
+Let $\mathcal{F}:=\mathscr{C}(\RR^{[0,\infty)})$ denote the $\sigma$-algebra generated by all cylinder sets. Of course, if we are magically given a probability measure $\PP$ on $(\Omega,\mathcal{F})$, then we can define a family of finite-dimensional distributions by
+\begin{equation*}
+    Q_{[t]}(A) := \PP(\{\omega\in\Omega : (\omega(t_1),\ldots,\omega(t_n))\in A\})
+\end{equation*}
+for all $A\in\mathscr{B}(\RR^n)$ and $[t]\in\mathcal{T}$. One can check that this definition yields a consistent family. We are interested in the converse: we would like to prescribe all finite-dimensional distributions for a stochastic process, and construct an appropriate probability space. That the consistency condition is sufficient is the non-trivial claim of the following result.
+
+\begin{theorem}[Daniell-Kolmogorov extension theorem]
+\label{thm:D-K-ext}
+    Let $(Q_{[t]})_{[t]\in\mathcal{T}}$ be a consistent family of finite-dimensional distributions. Then there exists a (unique) probability measure $\PP$ on $(\RR^{[0,\infty)},\mathscr{C}(\RR^{[0,\infty)}))$ such that
+    \begin{equation}
+    Q_{[t]}(A) = \PP(\{\omega\in\RR^{[0,\infty)} : (\omega(t_1),\ldots,\omega(t_n))\in A\}), \quad\forall\,A\in\mathscr{B}(\RR^n)
+    \end{equation}
+    holds for all $[t]\in\mathcal{T}$.
+\end{theorem}
+
+We will not present the long and technical proof; we merely remark that the main theoretical tool used in the proof is the Carath\'{e}odory extension theorem. See~\cite[Section 2.2A]{KS} for the details.
+
+\subsection{Supplement: essential probabilistic tools}
+
+In this section, we collect some basic results in probability that will be essential to the analysis of stochastic processes.
+
+\begin{proposition}[Markov-Chebyshev inequalities]
+\label{prop:chebyshev}
+    Let $X:\Omega\to\RR$ be a random variable on a probability space $(\Omega,\mathcal{F},\PP)$. For every $1\le p<\infty$ and $\lambda>0$, it holds that
+    \begin{equation}
+        \PP(|X|\ge\lambda) \le \frac{1}{\lambda^p}\EE|X|^p.
+    \end{equation}
+\end{proposition}
+
+\begin{proof}
+    We observe that
+    \begin{equation*}
+        \EE|X|^p = \int_\Omega |X|^p\,d\PP \ge \int_{(|X|\ge\lambda)} |X|^p\,d\PP = \lambda^p \PP(|X|\ge\lambda). \qedhere
+    \end{equation*}
+\end{proof}
+
+In probability and stochastic analysis, we often want to determine when something happens `infinitely often'. If $(A_n)_{n\in\NN}$ is a sequence of events in a probability space $(\Omega,\mathcal{F},\PP)$, we define
+\begin{equation}
+    (A_n \text{ i.o.}) := \limsup A_n := \bigcap_{n=1}^\infty\bigcup_{m=n}^\infty A_m,
+\end{equation}
+where i.o.\ is an abbreviation for `infinitely often'. We have the following fundamental lemma.
+
+\begin{lemma}[Borel-Cantelli]
+\label{lem:BC}
+Let $(A_n)_{n\in\NN}$ be a sequence of events in a probability space $(\Omega,\mathcal{F},\PP)$. If $\sum_{n=1}^\infty \PP(A_n)<\infty$, then
+\begin{equation*}
+    \PP(A_n \textnormal{ i.o.}) = 0.
+\end{equation*}
+
+On the other hand, if $(A_n)_{n\in\NN}$ is a sequence of \emph{independent} events and $\sum_{n=1}^\infty \PP(A_n) = +\infty$, then
+\begin{equation*}
+    \PP(A_n \textnormal{ i.o.}) = 1.
+\end{equation*}
+\end{lemma}
+
+\begin{proof}
+    Observe that for every $n\in\NN$, we have
+    \begin{equation*}
+        \PP(A_n \text{ i.o.}) \le \PP\bigg(\bigcup_{m=n}^\infty A_m\bigg) \le \sum_{m=n}^\infty \PP(A_m).
+    \end{equation*}
+    If the series $\sum_{n=1}^\infty \PP(A_n)$ converges, then the right hand side of the above converges to $0$ as $n\to\infty$. This proves the first assertion.
+
+    To prove the second assertion, we set $p_i := \PP(A_i)$, and prove the equivalent statement $\PP((A_n \text{ i.o.})^c) = 0$. Since the $A_i$ are independent, for all $N>m\ge 1$ we have
+    \begin{equation*}
+    \PP\bigg( \bigcap_{n=m}^N A_n^c \bigg) = \prod_{n=m}^N (1 - p_n) \le \prod_{n=m}^N e^{-p_n} = \exp\left( -\sum_{n=m}^N p_n \right) \longrightarrow 0
+    \end{equation*}
+    as $N\to\infty$, since the series of probabilities diverge to $+\infty$. By continuity of measures, we obtain
+    \begin{equation*}
+    \PP\bigg(\bigcap_{n=m}^\infty A_n^c\bigg) = \lim_{N \to \infty} \PP\bigg( \bigcap_{n=m}^N A_n^c \bigg) = 0
+    \end{equation*}
+    for every $m\ge 1$. Hence
+    \begin{equation*}
+    \PP( (A_n \text{ i.o.})^c) = \PP\bigg( \bigcup_{m=1}^\infty \bigcap_{n=m}^\infty A_n^c \bigg) \le \sum_{m=1}^\infty \PP\bigg(\bigcap_{n=m}^\infty A_n\bigg) = 0
+    \end{equation*}
+    and indeed $\PP(A_n \text{ i.o.}) = 1$.
+\end{proof}
+
+\begin{proposition}[Layer-cake formula]
+    Let $X:\Omega\to\RR$ be a random variable such that $X\ge 0$ $\PP$-almost surely. Then, for all $1\le p<\infty$,
+    \begin{equation}
+        \EE(X) = p\int_0^\infty \lambda^{p-1}\PP(X\ge \lambda)\,d\lambda.
+    \end{equation}
+\end{proposition}
+
+\textcolor{red}{add more as necessary}

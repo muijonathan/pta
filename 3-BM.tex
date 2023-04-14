@@ -1,0 +1,404 @@
+\section{Brownian motion}
+
+\subsection{Basic properties}
+We are now ready to introduce the mathematical definition of one-dimensional Brownian motion.
+\begin{definition}
+Let $(\Omega,\mathcal{F},\PP)$ be a probability space with filtration $(\mathcal{F}_t)_{t \ge 0}$. An $\mathcal{F}_t$-adapted stochastic process $(W_t)_{t\ge 0}$, where each $W_t$ takes values in $\RR$, is a \textbf{(standard) Brownian motion} or \textbf{Wiener process} if
+\begin{itemize}
+    \item[(W1)] $W_0 = 0$ almost surely;
+    \item[(W2)] $W$ has \emph{independent increments}: for $0\le s < t$, $W_t - W_s$ is independent of $\mathcal{F}_s$;
+    \item[(W3)] $W_t - W_s \sim N(0, t-s)$, i.e.\ increments are normally distributed with mean 0 and variance $t-s$;
+    \item[(W4)] Sample paths are almost surely continuous, that is,
+    \begin{equation*}
+        \PP\big(\{ \omega\in\Omega : t \mapsto W(t,\omega) \text{ is continuous on } [0,\infty) \}\big) = 1.
+    \end{equation*}
+\end{itemize}
+We can also define Brownian motion \emph{starting at $x\in\RR$} by replacing condition (W1) with $W_0 = x$ almost surely. More generally, given a probability measure $\mu$ on $(\RR,\mathscr{B}(\RR))$, we define Brownian motion \emph{with initial distribution $\mu$} by requiring $\PP(W_0\in B) = \mu(B)$ for all Borel subsets $B\subseteq\RR$ in place of (W1).
+\end{definition}
+
+\begin{remark}
+\label{rmk:indep-increments}
+Condition (W2) implies in particular that $W_t-W_s$ is independent of any $\mathcal{F}_s$-measurable random variable $X$. It is also equivalent to the seemingly weaker condition:
+\begin{itemize}
+    \item[(W2')] for all $n\in\NN$ and indices $0\le t_0<t_1<\ldots<t_n<\infty$, the random variables $W_{t_0}, W_{t_1}-W_{t_0}, \ldots, W_{t_n}-W_{t_{n-1}}$ are independent.
+\end{itemize}
+In fact, if $(X_t)_{t\ge 0}$ is any stochastic process satisfying (W2'), then for $0\le s<t$ the increment $X_t-X_s$ is independent of $\mathcal{F}_s^X$. See~\cite[Chapter 2, Problem 1.4]{KS} for the proof of this general statement, which uses the Dynkin theorem~\eqref{thm:pi-lambda}.
+\end{remark}
+
+A fundamental problem is naturally to determine if a Brownian motion exists! We will address this in detail in Section~\ref{sec:3-exist}. For now, let us acquaint ourselves with elementary consequences of the definition of Brownian motion.
+\begin{exercise}[Important!]
+Let $(W_t,\mathcal{F}_t)$ be a Brownian motion. Show the following facts:
+\begin{enumerate}[(i)]
+    \item $(-W_t,(\mathcal{F}_t)_{t\ge 0})$ is a Brownian motion.
+    \item $\Cov(W_t, W_s) = s\wedge t$.
+    \item $W_t$ and $M_t:=W_t^2-t$ are $\mathcal{F}_t$-martingales.
+\end{enumerate}
+\end{exercise}
+
+Brownian motion is a particular example of various important types of stochastic processes. In the previous exercise, we showed that $(W_t)_{t\ge 0}$ is a \emph{continuous martingale} (more precisely, a martingale such that almost every sample path is continuous). Another class of processes that appears frequently in applications is the following.
+\begin{definition}
+\label{def:gaussian-proc}
+An $\RR^d$-valued stochastic process $(X_t)_{t\ge 0}$ is called \textbf{Gaussian} if, for any $n\in\NN$ and moments of time $0\le t_1<t_2<\ldots <t_n<\infty$, the random vector $(X_{t_1},\ldots,X_{t_n})$ has a joint normal distribution. Furthermore, if the distribution of $(X_{t+t_1},\ldots,X_{t+t_n})$ is independent of $t\ge 0$, we say that the process is \textbf{stationary}.
+\end{definition}
+
+\begin{remark}
+\label{rmk:Gaussian}
+(i): The defining condition of Gaussian processes is equivalent to the following: for any $n\in\NN$, moments of time $0\le t_1<t_2<\ldots <t_n<\infty$, and vector $(a_1,\ldots,a_n)\in\RR^n$, the random variable $\sum_{k=1}^n a_k X_{t_k}$ has a normal distribution. Indeed, this is a direct consequence of Theorem~\ref{thm:joint-normal}.
+
+(ii): By considering characteristic functions, it can be shown that a Gaussian process is completely determined by its expectation vector $m(t):=\EE(X_t)$ and its (matrix-valued) covariance function
+\begin{equation*}
+    \varrho(s,t) := \EE[(X_s-m(s))(X_t-m(t))^\top], \qquad s,t\ge 0.
+\end{equation*}
+We say that a process is \emph{zero-mean} if $m(t)\equiv 0$.
+\end{remark}
+
+\begin{proposition}
+\label{prop:BM-gaussian}
+    The standard one-dimensional Brownian motion is a zero-mean Gaussian process. Conversely, if $X=(X_t)_{t\ge 0}$ is a zero-mean Gaussian process with continuous sample paths and covariance function $\varrho(s,t)=s\wedge t$, then $X$ is a standard Brownian motion.
+\end{proposition}
+
+\begin{proof}
+The zero-mean property is obvious. To prove the Gaussian property, take arbitrary points in time $0\le t_1 < t_2 < \ldots < t_n$ and numbers $a_1,\ldots, a_n \in \RR$. By Remark~\ref{rmk:Gaussian}(i), we only need to show that $Z := \sum_{i=1}^n a_i W_{t_i}$ is normally distributed. The argument is inductive. Consider first $n=2$, so let $Z = a_1 W_{t_1} + a_2 W_{t_2}$. Then
+\begin{equation*}
+    Z = a_1 W_{t_1} + a_2(W_{t_2} - W_{t_1} + W_{t_1}) = (a_1+a_2)(W_{t_1}-W_0) + a_2(W_{t_2}-W_{t_1})
+\end{equation*}
+which is a linear combination of independent Gaussian random variables. This has a normal distribution by Proposition~\ref{prop:sum-gaussian}.
+
+Now assume the claim holds for some $n \ge 2$, and let $0 \le t_1 < t_2 < \ldots < t_{n+1}$ and $a_1, \ldots, a_n, a_{n+1} \in \RR$ be arbitrary. Define $Z = \sum_{i=1}^{n+1} a_i W_{t_i}$, and observe that
+\begin{align*}
+    Z &= a_1 W_{t_1} + \ldots + a_n W_{t_n} + a_{n+1}(W_{t_{n+1}} - W_{t_n} + W_{t_n}) \\
+    &= a_1 W_{t_1} + \ldots + (a_{n+1}-a_n)W_{t_n} + a_{n+1}(W_{t_{n+1}} - W_{t_n}).
+\end{align*}
+By the induction hypothesis, the sum of the first $n$ terms in the above expression defines a Gaussian random variable, and note that it is independent of $W_{t_{n+1}}-W_{t_n}$. Hence $Z$ is a Gaussian random variable.
+
+Finally, the converse statement follows from Remark~\ref{rmk:Gaussian}(ii).
+\end{proof}
+
+We now examine some simple transformations that preserve the properties of Brownian motion.
+\begin{proposition}
+\label{prop:W-invariance-1d}
+Let $(W_t, \mathcal{F}_t)$ be a standard one-dimensional Brownian motion. 
+\begin{enumerate}[\upshape (i)]
+    \item \emph{(Time translation)} Fix $s\ge 0$, and define $B_t := W_{t+s} - W_s$. Then $B_t$ is a Brownian motion with respect to the filtration $\mathcal{G}_t = \mathcal{F}_{t+s}$. Moreover, $(B_t)_{t\ge 0}$ is independent of $\{ W_u : 0\le u\le s \}$.
+    
+    \item \emph{(Time reversal)} Fix $T > 0$ and define $B_t = W_T - W_{T-t}$ for all $t\in [0,T]$. Then $B_t$ is a Brownian motion with respect to the filtration $\mathcal{G}_t = \sigma(B_s : 0\le s\le t)$.
+    
+    \item \emph{(Scale invariance)} Fix $c > 0$, and define $B_t = c W_{t/c^2}$. Then $B_t$ is a Brownian motion with respect to the filtration $\mathcal{G}_t := \mathcal{F}_{t/c^2}$.
+    
+    \item \emph{(Time inversion)} Define
+    \begin{equation*}
+        B_t := \begin{cases} t W_{1/t} \qquad & t > 0 \\
+        0 & t = 0 \end{cases}
+    \end{equation*}
+    and $\mathcal{G}_t = \sigma(W_{1/s} : 0 < s\le t)$. Then $(B_t, \mathcal{G}_t)$ is a Brownian motion.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Property (W1) is trivial for all four processes defined in the proposition. The continuity on $[0,\infty)$ is clear for (i) and (iii), and likewise for the continuity on $[0,T]$ for (ii). For the time-inverted process in (iv), the continuity for $t>0$ is immediate, but continuity up to $t=0$ is quite non-trivial, so we defer this discussion to Section~\ref{sec:3-reg}.
+
+In (i), clearly $B_t$ is adapted to $\mathcal{F}_{t+s}=\mathcal{G}_t$. Adaptedness is automatic in (ii), (iii) and (iv) from the definition of $\mathcal{G}_t$ in each case. It remains to verify properties (W2) and (W3) for each process.
+\begin{enumerate}[(i)]
+    \item It is obvious that $\EE(B_t)=0$ for all $t\ge 0$, and if $0\le t_1<t_2$, then
+    \begin{equation*}
+    B_{t_2}-B_{t_1} = (W_{t_2+s}-W_s) - (W_{t_1+s}-W_s) = W_{t_2+s}-W_{t_1+s} \sim N(0,t-s).
+    \end{equation*}
+    The above calculation also shows that $B_{t_2}-B_{t_1}$ is independent of $\mathcal{F}_{t_1+s}=\mathcal{G}_{t_1}$.
+
+    \item If $0\le t_1<t_2\le T$, we have
+    \begin{equation*}
+        B_{t_2}-B_{t_1} = (W_T-W_{T-t_2})-(W_T-W_{T-t_1}) = W_{T-t_1}-W_{T-t_2} \sim N(0,t_2-t_1).
+    \end{equation*}
+    Note that $\mathcal{G}_{t_1}=\sigma(W_T-W_{T-s}:0\le s\le t_1)$. By property (W3) for $(W_t)_{t\in [0,T]}$, we see that $W_{T-t_1}-W_{T-t_2}$ is independent of $\mathcal{G}_{t_1}$.
+
+    \item If $0\le s<t$, then
+    \begin{equation*}
+        B_t-B_s = c(W_{t/c^2}-W_{s/c^2}) \sim N(0, t-s),
+    \end{equation*}
+    and clearly $B_t-B_s$ is independent of $\mathcal{F}_{s/c^2}=\mathcal{G}_s$.
+
+    \item By Proposition~\ref{prop:BM-gaussian}, it suffices to show that $(B_t)_{t\ge 0}$ defines a zero-mean Gaussian process, and then compute the covariance function.
+    
+    It is clear that $\EE(B_t)=0$ for every $t\ge 0$, and the Gaussian property for $B_t$ also follows from the calculations of Proposition~\ref{prop:BM-gaussian}. If $0<s\le t$, we compute
+    \begin{equation*}
+        \Cov(B_s,B_t) = \EE(B_s B_t) = st \EE(W_{1/s}W_{1/t}) = st\left(\frac{1}{s}\wedge\frac{1}{t}\right) = st\cdot \frac{1}{t}=s.
+    \end{equation*}
+    Hence $\EE(B_t B_s)=s\wedge t$ for all $s,t\ge 0$. Finally, observe that $tW_{1/t}-sW_{1/s}$ is independent of any increment $W_{1/u}-W_{1/s}$ for all $0<u\le s$, and thus is independent of $\sigma(W_{1/u}:0<u\le s)=\mathcal{G}_s$. \qedhere
+\end{enumerate}
+\end{proof}
+
+For completeness, we define Brownian motion with values in $\RR^d$.
+\begin{definition}
+Let $\mu$ be a probability measure on $(\RR^d, \mathscr{B}(\RR^d))$, and let $(\Omega,\mathcal{F},\PP)$ be a probability space with filtration $(\mathcal{F}_t)_{t\ge 0}$. An $\mathcal{F}_t$-adapted stochastic process $B = (B_t)_{t \ge 0}$ on $\Omega$ with values in $\RR^d$ is called a \textbf{$d$-dimensional Brownian motion (Wiener process)} with initial distribution $\mu$ if
+\begin{enumerate}[\upshape (i)]
+    \item $\PP[B_0 \in \Gamma] = \mu(\Gamma)$ for all Borel sets $\Gamma \subseteq\RR^d$.
+    \item For $0\le s < t$, the increment $B_t - B_s$ is independent of $\mathcal{F}_s$.
+    \item For $0\le s < t$, $B_t - B_s$ is normally distributed with mean $0\in\RR^d$ and covariance matrix $(t-s)I_{d\times d}$.
+    \item The sample path $t\mapsto B_t(\omega)$ is continuous for $\PP$-almost every $\omega$.
+\end{enumerate}
+If $\mu$ is the Dirac measure at $x\in\RR^d$, then we say that $B$ is a Brownian motion \emph{starting at} $x$.
+\end{definition}
+It is straightforward to check that if $\mathbf{W}_t = (W^1_t,\ldots, W^d_t)$ is a vector consisting of independent 1-dimensional Brownian motions $W^i_t$, then $\mathbf{W}_t$ is a $d$-dimensional Brownian motion. (In particular, use Proposition~\ref{prop:gauss-cor} to verify the independence of increments). Conversely, if $\mathbf{W}_t$ is a $d$-dimensional Brownian motion, then the component processes $\{ W^i_t : t\ge 0, i = 1,\ldots, d\}$ form a family of independent 1-dimensional Brownian motions. In this context, independence means that $W^i_t, W^j_s$ are independent for any $i, j\in \{1,\ldots, d\}$ with $i\ne j$ and any $t, s\ge 0$.
+
+\subsection{Existence of Brownian motion}
+\label{sec:3-exist}
+
+The objective in this section is to give a rigorous construction of one-dimensional standard Brownian motion. There are in fact several construction methods --- we will first outline a classic, measure-theoretic approach via the Daniell-Kolmogorov extension theorem~\eqref{thm:D-K-ext}, then present in detail the L\'{e}vy-Ciesielski construction, which has a harmonic analysis flavour.
+
+\subsubsection*{Measure-theoretic construction}
+\textcolor{red}{complete later}
+
+\subsubsection*{L\'{e}vy-Ciesielski construction}
+We will give an explicit construction, due to L\'{e}vy and Ciesielski, of a standard one-dimensional Brownian motion on the time interval $[0, 1]$. Let us first explain why this is sufficient for the construction of Brownian motion on $[0,\infty)$. One starts with a probability space $(\Omega,\mathcal{F},\PP)$ whose $\sigma$-algebra is rich enough to support a countable family of independent $N(0,1)$ (i.e.\ standard Gaussian) random variables. We re-index this family so that for each $n\in\NN$, there is a countable family of independent $N(0,1)$ random variables. Given that we can obtain for each $n\in\NN$ a standard Brownian motion $(B^{(n)}_t)_{t\in [0,1]}$, we define recursively
+\begin{equation}
+\label{eq:BM-glue-together}
+\begin{aligned}
+    W_t &:= B^{(1)}_t, \quad t\in [0,1], \\
+    W_t &:= W_n + B^{(n+1)}_{t-n}, \quad t\in [n,n+1].
+\end{aligned}
+\end{equation}
+Thus we can glue together countably many Brownian motions on $[0,1]$ to obtain a Brownian motion on $[0,\infty)$.
+\begin{exercise}
+    Verify in detail that~\eqref{eq:BM-glue-together} defines a standard one-dimensional Brownian motion for $t\in [0,\infty)$.
+\end{exercise}
+
+The core idea of the L\'{e}vy-Ciesielski construction is to express Brownian motion as a series whose coefficients are independent $N(0,1)$ random variables. This idea goes back to Paley and Wiener, who investigated Fourier series with random coefficients. Our presentation mainly follows~\cite[Section 3.3]{EvSDE}.
+
+\begin{definition}[Haar wavelets]
+    On the space $L^2(0,1)$, we define
+    \begin{equation*}
+    \begin{aligned}
+        h_0(t) &\equiv 1, \\
+        h_1(t) &:= \begin{cases}
+            1 \qquad 0\le t\le \frac{1}{2} \\
+            -1 \qquad \frac{1}{2}<t\le 1.
+        \end{cases}
+    \end{aligned}
+    \end{equation*}
+    Then for all $n\in\NN$ and $2^n\le k<2^{n+1}$, define
+    \begin{equation*}
+        h_k(t) := \begin{cases}
+            2^{n/2} \qquad \frac{k-2^n}{2^n}\le t\le \frac{k-2^n+1/2}{2^n} \\
+            -2^{n/2} \qquad \frac{k-2^n+1/2}{2^n}<t\le \frac{k-2^n+1}{2^n} \\
+            0 \qquad \text{otherwise}.
+        \end{cases}
+    \end{equation*}
+\end{definition}
+
+\begin{proposition}
+\label{prop:haar-basis}
+    The collection $\{h_k\}_{k=0}^\infty$ of Haar wavelets form an orthonormal basis of $L^2(0,1)$.
+\end{proposition}
+
+\begin{proof}
+Clearly $\|h_0\|_2 = 1$ and
+\begin{equation*}
+    \int_0^1 |h_k(t)|^2\,dt = 2^n(2^{-(n+1)}+2^{-(n+1)}) = 1
+\end{equation*}
+for all $k\ge 1$. If $\ell>k$, then either $h_\ell(t) h_k(t)=0$ for all $t\in [0,1]$, or else the support of $h_\ell$ is contained in an interval on which $h_k$ is constant. In the second case, we have
+\begin{equation*}
+    \int_0^t h_\ell(t)h_k(t)\,dt = \pm 2^{n/2}\int_0^1 h_\ell(t) \,dt = 0.
+\end{equation*}
+Hence $\{h_k\}_{k=0}^\infty$ is an orthonormal family in $L^2(0,1)$.
+
+To prove that the family forms a basis, it suffices to prove that if $\braket{f,h_k}=0$ for all $k\ge 0$, then $f=0$ a.e.\ on $[0,1]$. For $k=0$, we have $\int_0^1 f\,dt = 0$. For $k=1$, the condition $\int_0^1 h_1 f\,dt = 0$ implies that
+\begin{equation*}
+    \int_0^{1/2}f\,dt = \int_{1/2}^1 f\,dt.
+\end{equation*}
+But then, both integrals above are equal to $0$, since
+\begin{equation*}
+    0 = \int_0^1 f\,dt = \int_0^{1/2}f\,dt + \int_{1/2}^1 f\,dt.
+\end{equation*}
+By induction, one shows that
+\begin{equation*}
+    \int_{k/2^{n+1}}^{(k+1)/2^{n+1}} f\,dt = 0
+\end{equation*}
+for all $n\in\NN$ and $0\le k<2^{n+1}$. Consequently, $\int_0^1 \mathbf{1}_{[r,s]}f\,dt = 0$ for all intervals $[r,s]$ with dyadic rational endpoints. Since the collection of all dyadic intervals $[r,s]\subseteq [0,1]$ generates the Borel $\sigma$-algebra on $[0,1]$, thus the span of indicator functions $\mathbf{1}_{[r,s]}$ is dense in $L^2(0,1)$. It follows that $f=0$ a.e., as required.
+\end{proof}
+
+\begin{exercise}
+    Fill in the details of the induction argument in Proposition~\ref{prop:haar-basis}.
+\end{exercise}
+
+Obviously the Haar functions are not continuous. To obtain a stochastic process with continuous sample paths, we require the following modification.
+\begin{definition}
+    For each $k=0,1,2\ldots$, define the $k$-th \textbf{Schauder function} by
+    \begin{equation}
+        S_k(t) := \int_0^t h_k(s)\,ds \qquad (0\le t\le 1).
+    \end{equation}
+\end{definition}
+Observe that each $S_k$ is continuous on $[0,1]$, and the graph of $S_k$, for $2^n\le k<2^{n+1}$, is a `tent' of height $2^{-\frac{n}{2}-1}$ supported on the interval $[\tfrac{k-2^n}{2^n}, \tfrac{k-2^n+1}{2^n}]$. We obtain
+\begin{equation}
+\label{eq:Sk-max}
+    \max_{t\in [0,1]}|S_k(t)| = 2^{-\frac{n}{2}-1} \quad\text{for }2^n\le k<2^{n+1}.
+\end{equation}
+
+The following technical result will be required later.
+\begin{lemma}
+\label{lem:Skt}
+    The Schauder functions satisfy
+    \begin{equation*}
+        \sum_{k=0}^\infty S_k(t)S_k(s) = t\wedge s
+    \end{equation*}
+    for all $0\le t,s\le 1$.
+\end{lemma}
+
+\begin{proof}
+    For fixed $s\in [0,1]$, define
+    \begin{equation*}
+        \phi_s(\tau) := \begin{cases}
+            1 \qquad 0\le\tau\le s \\
+            0 \qquad s<\tau\le 1.
+        \end{cases}
+    \end{equation*}
+    If $s\le t$, observe that $\int_0^1 \phi_t \phi_s\,d\tau = s$. However, using Proposition~\ref{prop:haar-basis}, we can expand $\phi_t, \phi_s$ in the Haar basis to obtain
+    \begin{equation*}
+        \int_0^1 \phi_t h_k\,d\tau = \int_0^t h_k\,d\tau = S_k(t),
+    \end{equation*}
+    and likewise $\int_0^1 \phi_s h_k\,d\tau = S_k(s)$, for all $k\ge 0$. Therefore
+    \begin{equation*}
+        \int_0^1 \phi_t\phi_s\,d\tau = \sum_{k=0}^\infty S_k(t)S_k(s)
+    \end{equation*}
+    which completes the proof.
+\end{proof}
+
+Our intention is to define Brownian motion on $[0,1]$ as $W(t):=\sum_{k=0}^\infty A_k S_k(t)$, where the $A_k$'s are independent $N(0,1)$ random variables. The following two lemmas contain the technical work to ensure that such a series converges uniformly for $\PP$-almost every $\omega\in\Omega$.
+
+\begin{lemma}
+\label{lem:unif-converge}
+    Let $(a_k)_{k=0}^\infty$ be a sequence of real numbers such that
+    \begin{equation*}
+        |a_k|\le Ck^\delta, \quad k\ge 1,
+    \end{equation*}
+    for some constants $C>0$ and $0\le\delta <\frac{1}{2}$. Then the series
+    \begin{equation*}
+        \sum_{k=0}^\infty a_k S_k(t)
+    \end{equation*}
+    converges uniformly for $t\in [0,1]$.
+\end{lemma}
+
+\begin{proof}
+    Let $\varepsilon>0$ be arbitrary. Notice that by construction, the functions $S_k$ for $2^n\le k<2^{n+1}$ have disjoint supports. From the assumptions of the lemma, we have
+    \begin{equation*}
+        b_n := \max_{2^n\le k<2^{n+1}}|a_k| \le C(2^{n+1})^\delta.
+    \end{equation*}
+    Then for all $t\in [0,1]$, we use the above estimate together with~\eqref{eq:Sk-max} to find
+    \begin{equation*}
+        \sum_{k=2^m}^\infty |a_k||S_k(t)| \le \sum_{n=m}^\infty b_n \max_{2^n\le k<2^{n+1}}\max_{t\in [0,1]}|S_k(t)| \le C\sum_{n=m}^\infty (2^{n+1})^\delta 2^{-\frac{n}{2}-1}<\varepsilon
+    \end{equation*}
+    for sufficiently large $m\in\NN$, since $0\le\delta<\frac{1}{2}$.
+\end{proof}
+
+\begin{lemma}
+\label{lem:log-growth}
+    Let $(A_k)_{k=0}^\infty$ be a sequence of independent $N(0,1)$ random variables. Then for $\PP$-almost every $\omega$, it holds that
+    \begin{equation*}
+        |A_k(\omega)| = O(\sqrt{\log k}) \quad\text{as }k\to\infty.
+    \end{equation*}
+    Moreover, there exists an $\NN$-valued random variable $K$ such that $|A_k(\omega)|\le 4k^{1/4}$ for all $k\ge K(\omega)$ and almost every $\omega\in\Omega$.
+\end{lemma}
+
+\begin{proof}
+    For all $x>0$ and $k\ge 2$, we have
+    \begin{equation*}
+        \PP(|A_k|>x) = \frac{2}{\sqrt{2\pi}}\int_x^\infty e^{-\frac{y^2}{2}}\,dy \le \frac{2}{\sqrt{2\pi}}e^{-\frac{x^2}{4}}\int_x^\infty e^{-\frac{y^2}{4}}\,dy \le \sqrt{2}e^{-\frac{x^2}{4}}
+    \end{equation*}
+    since $\frac{2}{\sqrt{2\pi}}\int_0^\infty e^{-y^2/4}\,dy = \sqrt{2}$. Setting $x=4\sqrt{\log k}$, we find
+    \begin{equation*}
+        \PP(|A_k|>4\sqrt{\log k}) \le \sqrt{2}e^{-4\log k} = \frac{\sqrt{2}}{k^4}.
+    \end{equation*}
+    Since the series $\sum \frac{1}{k^4}$ converges, the Borel-Cantelli lemma~\eqref{lem:BC} implies that
+    \begin{equation*}
+        \PP(|A_k|>4\sqrt{\log k} \text{ i.o.}) = 0.
+    \end{equation*}
+    Therefore, for almost every $\omega$, there exists $K(\omega)\in\NN$ such that
+    \begin{equation*}
+        |A_k(\omega)|\le 4\sqrt{\log k} \le 4k^{1/4}
+    \end{equation*}
+    for all $k\ge K(\omega)$. The last inequality follows from the elementary estimate $\log t \le t^{1/2}$ for all $t\ge 1$.
+\end{proof}
+
+\begin{theorem}
+    Let $(\Omega,\mathcal{F},\PP)$ be a probability space on which there exists a sequence $(A_k)_{k=0}^\infty$ of independent $N(0,1)$ random variables. Then the series
+    \begin{equation*}
+        W(t,\omega) := \sum_{k=0}^\infty A_k(\omega)S_k(t), \quad t\in [0,1],
+    \end{equation*}
+    converges uniformly in $t$ for $\PP$-almost every $\omega\in\Omega$. Moreover, $W$ is a Brownian motion on $[0,1]$ (with the natural filtration), and in particular, for a.e.\ $\omega$ the sample path $t\mapsto W(t,\omega)$ is continuous.
+\end{theorem}
+
+\begin{proof}
+    The uniform convergence of the series in $t$ for almost every $\omega$ follows from Lemmas~\ref{lem:unif-converge} and~\ref{lem:log-growth}. Since the Schauder functions $S_k$ are continuous, the uniform convergence also yields the continuity of the sample path $t\mapsto W(t,\omega)$ for almost every $\omega$.
+
+    Now we prove that $W$ is a Brownian motion on $[0,1]$. Clearly $W(0)=0$. To show that each increment $W_t-W_s \sim N(0,t-s)$, we compute the characteristic function.
+    \begin{align*}
+        \EE[e^{i\lambda(W_t-W_s)}] &= \EE\left[\exp\left(i\lambda\sum_{k=0}^\infty A_k(S_k(t)-S_k(s))\right)\right] \\
+        \text{\small(independence of $A_k$'s)}\quad &= \prod_{k=0}^\infty \EE\big[e^{i\lambda A_k(S_k(t)-S_k(s))}\big] \\
+        \text{\small(since $A_k\sim N(0,1)$)}\quad &= \prod_{k=0}^\infty e^{-\frac{\lambda^2}{2}(S_k(t)-S_k(s))^2} \\
+        &= \exp\left(-\frac{\lambda^2}{2}\sum_{k=0}^\infty \big[S_k^2(t)-2S_k(t)S_k(s)+S_k(s)^2\big]\right) \\
+        \text{\small(Lemma~\ref{lem:Skt})}\quad &= e^{-\frac{\lambda^2}{2}(t-2s+s)} = e^{-\frac{\lambda^2}{2}(t-s)}.
+    \end{align*}
+    By uniqueness of characteristic functions, we obtain $W_t-W_s\sim N(0,t-s)$.
+
+    It remains to show that $W_t-W_s$ is independent of $\sigma(W_u:0\le u\le s)$. It suffices to prove the following: for all $m\in\NN$ and $0=t_0<t_1<\ldots <t_m\le 1$, it holds that
+    \begin{equation}
+    \label{eq:proof-indep-increments}
+        \EE\left[\exp\bigg(i\sum_{k=1}^m \lambda_k (W_{t_k}-W_{t_{k-1}})\bigg)\right] = \prod_{k=1}^m e^{-\frac{\lambda^2_k}{2}(t_k-t_{k-1})}
+    \end{equation}
+    for all $\lambda=(\lambda_1,\ldots,\lambda_m)\in\RR^m$. Indeed, the above implies that the random variables $W_{t_1}, W_{t_2}-W_{t_1}, \ldots, W_{t_m}-W_{t_{m-1}}$ are independent. The proof is then complete by Remark~\ref{rmk:indep-increments}.
+
+    For the case $m=2$, let $\lambda_1,\lambda_2\in\RR$ and $0<t_1<t_2\le 1$ be arbitrary. We compute
+    \begin{align*}
+        \EE\big[e^{i(\lambda_1 W_{t_1} + \lambda_2(W_{t_2}-W_{t_1}))}\big] &= \EE\big[e^{i(\lambda_1-\lambda_2)W_{t_1} + \lambda_2 W_{t_2})}\big] \\
+        &= \EE\left[\exp\left(i(\lambda_1-\lambda_2)\sum_{k=0}^\infty A_k S_k(t_1) + i\lambda_2\sum_{k=0}^\infty A_k S_k(t_2)\right)\right] \\
+        &= \prod_{k=0}^\infty \EE\big(e^{i A_k[(\lambda_1-\lambda_2)S_k(t_1)+\lambda_2 S_k(t_2)]}\big) \\
+        &= \prod_{k=0}^\infty e^{-\frac{1}{2}((\lambda_1-\lambda_2)S_k(t_1)+\lambda_2 S_k(t_2))^2} \\
+        &= \exp\left(-\frac{1}{2}\sum_{k=0}^\infty [(\lambda_1-\lambda_2)S_k(t_1)+\lambda_2 S_k(t_2)]^2 \right).
+    \end{align*}
+    Using Lemma~\ref{lem:Skt} again, we obtain
+    \begin{align*}
+        \sum_{k=0}^\infty [(\lambda_1-\lambda_2)S_k(t_1)+\lambda_2 S_k(t_2)]^2 &= \sum_{k=0}^\infty [(\lambda_1-\lambda_2)^2 S_k(t_1)^2 + 2(\lambda_1-\lambda_2)\lambda_2 S_k(t_1)S_k(t_2) + \lambda_2^2 S_k(t_2)^2] \\
+        &= (\lambda_1-\lambda_2)^2 t_1 + 2(\lambda_1-\lambda_2)\lambda_2 t_1 + \lambda_2^2 t_2 \\
+        &= \lambda_1^2 (t_1-t_0) + \lambda_2^2(t_2-t_1).
+    \end{align*}
+    Therefore
+    \begin{equation*}
+        \EE\big[e^{i(\lambda_1 W_{t_1} + \lambda_2(W_{t_2}-W_{t_1}))}\big] = e^{-\frac{\lambda_1^2}{2}(t_1-t_0)} e^{-\frac{\lambda_2^2}{2}(t_2-t_1)},
+    \end{equation*}
+    which is~\eqref{eq:proof-indep-increments} for $m=2$. The general case follows by induction.
+\end{proof}
+
+\subsection{Regularity of sample paths}
+\label{sec:3-reg}
+
+The following important theorem, due to Kolmogorov (like so many important results in probability), gives a sufficient criterion for sample paths to be H\"{o}lder continuous. To state the theorem more precisely, we require a definition: given two stochastic processes $(X_t)_{t\in I}$ and $(Y_t)_{t\in I}$ defined on the same probability space, we say that $Y$ is a \textbf{modification} of $X$ (or a \textbf{version} of $X$) if
+\begin{equation}
+    \PP\big(\omega\in\Omega: X(t,\omega)=Y(t,\omega)\big) = 1 \quad\text{ for every } t\in I.
+\end{equation}
+
+\begin{theorem}[Kolmogorov continuity criterion]
+\label{thm:K-cont}
+Let $X(\cdot)$ be an $\RR^d$-valued stochastic process on a probability space $(\Omega,\mathcal{F},\PP)$. Suppose that
+\begin{equation}
+    \EE|X_t-X_s|^\alpha \le C|t-s|^{1+\beta}, \qquad 0\le s,t\le T
+\end{equation}
+for some positive constants $\alpha, \beta, C$. Then there exists a continuous version $\widetilde{X}$ of $X$ which is uniformly $\gamma$-H\"{o}lder continuous for every $\gamma\in (0,\beta/\alpha)$ on $[0,T]$. More precisely,
+\begin{equation*}
+    \PP\bigg(\omega\in\Omega: \exists\,M=M(\omega,\gamma,T)>0 \text{ such that} \sup_{s\ne t\in [0,T]} \frac{|\widetilde{X}_t(\omega)-\widetilde{X}_s(\omega)|}{|t-s|^\gamma}\le M\bigg) = 1.
+\end{equation*}
+\end{theorem}
+
+\begin{theorem}[H\"{o}lder continuity of Brownian motion]
+    Let $\mathbf{W}_t = (W^1_t, \ldots, W^d_t)$ be an $\RR^d$-valued Brownian motion on $[0,T]$. For almost all $\omega$, the sample path $t\mapsto\mathbf{W}(t,\omega)$ is uniformly H\"{o}lder continuous on $[0,T]$ for every exponent $0<\gamma<\frac{1}{2}$.
+\end{theorem}
+
+\begin{proof}
+    For all $s,t\in [0,T]$ such that $t-s>0$ and for all $m\in\NN$, we have
+    \begin{align*}
+        \EE(|\mathbf{W}_t-\mathbf{W}_s|^{2m}) &= \frac{1}{(2\pi(t-s))^{d/2}}\int_{\RR^d} |x|^{2m} e^{-\frac{|x|^2}{2(t-s)}}\,dx \\
+        &= \frac{(t-s)^m}{(2\pi)^{d/2}} \int_{\RR^d} |y|^{2m}e^{-\frac{|y|^2}{2}}\,dy \\
+        &= C|t-s|^m.
+    \end{align*}
+    Thus the conditions of Theorem~\ref{thm:K-cont} are satisfied with $\alpha=2m$ and $\beta=m-1$. Consequently, for almost every $\omega$, the process is uniformly H\"{o}lder continuous on $[0,T]$ for every exponent $0<\gamma<\frac{m-1}{2m}=\frac{1}{2}-\frac{1}{2m}$. Since $m\in\NN$ was arbitrary, the conclusion follows.
+\end{proof}
+
+\textcolor{red}{to include: nowhere differentiability, completion of Prop.3.4}

@@ -1,0 +1,440 @@
+\section{Stochastic integrals}
+
+We are working towards a rigorous understanding of stochastic differential equations of the form
+\begin{equation}
+\label{eq:SDE}
+    dX_t = b(X_t)dt + \sigma(X_t) dW_t
+\end{equation}
+where $b, \sigma : \RR\to\RR$ are deterministic functions, and the `noise term' $dW_t$ intuitively represents an infinitesimal increment of Brownian motion. However, from the previous section, we know that almost all sample paths of Brownian motion are nowhere differentiable, so that $dW_t$ cannot be interpreted in a classical way as $\frac{dW}{dt}$. Nevertheless, if we \emph{formally} integrate equation \eqref{eq:SDE}, we arrive at the expression
+\begin{equation}
+    X_t = X_0 + \int_0^t F(X_s) \,ds + \int_0^t \sigma(X_t) \,dW_s.
+\end{equation}
+The object $\int_0^t \sigma(X_s)\,dW_s$ is a \textbf{stochastic integral} with respect to Brownian motion. We will see that such an object is well-defined for a large class of stochastic processes.
+
+\subsection{Total and quadratic variation}
+
+In order to construct a stochastic integral, we will need to examine some oscillation properties of Brownian motion. Let $f : [0, T] \to \RR$ be a Borel measurable function, and fix a \emph{partition} $\pi$ of $[0, T]$, i.e.\ a finite sequence of points $0 = t_0 < t_1 < \ldots < t_n = T$. Consider the quantity
+\begin{equation*}
+    V_\pi(f) := \sum_{k=1}^n |f(t_k) - f(t_{k-1})|.
+\end{equation*}
+We use the standard notation $\|\pi\| := \max_{1 \le k \le n}(t_k - t_{k-1})$, which is called the \emph{mesh size} of the partition.
+
+\begin{definition}
+\label{def:BV}
+Let $\Pi$ denote the family of all partitions of $[0, T]$. The \textbf{total variation} of $f$ is defined by
+\begin{equation*}
+    V_T(f) := \sup_{\pi \in \Pi} V_\pi(f).
+\end{equation*}
+If $V_T(f) < \infty$, we say that $f$ has \textbf{bounded variation} and write $f \in BV([0,T])$.
+
+For a given partition $\pi$, we also define
+\begin{equation*}
+    Q_\pi(f) := \sum_{k=1}^n |f(t_k) - f(t_{k-1})|^2,
+\end{equation*}
+and the \textbf{quadratic variation} is defined as
+\begin{equation}
+\label{eq:quadvar}
+    Q_T(f) := \lim_{\|\pi\|\to 0} Q_\pi(f).
+\end{equation}
+\end{definition}
+
+\begin{example}
+\begin{enumerate}[\upshape (i)]
+    \item The function $f(t) = \sin(1/t)$ on $(0,1]$ has $V(f) = \infty$.
+    
+    \item Every bounded monotone function on $[0,T]$ is of bounded variation, with $V(f) = |f(T) - f(0)|$. For a given partition $\{0 = t_0 < t_1 < \ldots < t_n = T\}$, we clearly have
+    \begin{equation*}
+        \sum_{k=1}^n |f(t_k) - f(t_{k-1})| = \left| \sum_{k=1}^n f(t_k) - f(t_{k-1}) \right| = |f(T) - f(0)|.
+    \end{equation*}
+    It is a classic result in analysis that every function $f \in BV([0,T])$ can be expressed as the difference of two monotone increasing functions. (Indeed, one can check that the decomposition $f = \frac{1}{2}(V_t(f)+f) - \frac{1}{2}(V_t(f)-f)$ works).
+    
+    \item If $f$ can be written as $f(t) = f(0) + \int_0^t f'(s) \,ds$ such that $\int_0^T |f'(s)| \,ds < \infty$, then $f \in BV([0,T])$. In fact, it can be shown that $V(f) = \int_0^T |f'(s)| \,ds$ in this case.
+\end{enumerate}
+\end{example}
+
+\begin{exercise}[Important!]
+\label{exer:BV-quad}
+Show that if $f \in BV([0,T])\cap C([0,T])$, then
+\begin{equation*}
+    Q_T(f) := \lim_{\|\pi\| \to 0} Q_\pi(f) = 0.
+\end{equation*}
+\end{exercise}
+The important observation to make from Exercise~\ref{exer:BV-quad} is that a continuous function with non-zero quadratic variation cannot be of bounded variation. Understanding quadratic variation is the key to developing stochastic calculus.
+
+\begin{remark}
+    Note that when~\eqref{eq:quadvar} is applied to a stochastic process, the result is a \emph{random variable}. If we compute the quadratic variation of a process on $[0,t]$ for all $t>0$, we obtain the \emph{quadratic variation process}.
+\end{remark}
+
+\begin{theorem}
+\label{thm:brownian-quadvar}
+Let $(W_t, \mathcal{F}_t)$ be a standard one-dimensional Brownian motion defined on $[0,T]$. Then
+\begin{equation*}
+    Q_T(W) = T
+\end{equation*}
+almost surely. In particular, almost every sample path of Brownian motion is \emph{not} of bounded variation on any interval $[0,T]$.
+\end{theorem}
+
+\begin{proof}
+We will prove that
+\begin{equation*}
+    \EE |Q_\pi(W) - T|^2 \longrightarrow 0 \quad \text{as } \|\pi\| \to 0.
+\end{equation*}
+Fix a partition $\pi = \{0 = t_0 < t_1 < \ldots < t_n = T\}$ of $[0, T]$. Then
+\begin{equation*}
+    \EE(Q_\pi(W)) = \sum_{k=1}^n \EE |W_{t_k} - W_{t_{k-1}}|^2 = \sum_{k=1}^n (t_k - t_{k-1}) = T
+\end{equation*}
+and consequently
+\begin{equation*}
+    \EE |Q_\pi(W) - T|^2 = \EE(Q_\pi(W)^2) - (\EE Q_\pi(W))^2 = \EE(Q_\pi(W)^2) - T^2.
+\end{equation*}
+It remains to calculate $\EE(Q_\pi(W)^2)$. For convenience of notation, let us denote Brownian increments by $\Delta W_k := W_{t_k} - W_{t_{k-1}}$. Then $\Delta W_j$ and $\Delta W_k$ are independent if $j < k$. We also recall from Proposition~\ref{prop:gauss-moments} that if $X \sim N(0, t)$, then $\EE(X^4) = 3t^2$. Now we compute
+\begin{align*}
+    \EE(Q_\pi(W)^2) = \EE \left[ \bigg( \sum_{k=1}^n \Delta W_k^2 \bigg)^2 \right] &= \sum_{k=1}^n \EE(\Delta W_k^4) + 2 \sum_{j < k} \EE(\Delta W_j^2 \Delta W_k^2) \\
+    &= 3 \sum_{k=1}^n (t_k - t_{k-1})^2 + 2 \sum_{j<k} (t_j - t_{j-1})(t_k - t_{k-1}) \\
+    &= 2 \sum_{k=1}^n (t_k - t_{k-1})^2 + \left[ \sum_{k=1}^n (t_k - t_{k-1}) \right]^2 \\
+    &= 2 \sum_{k=1}^n (t_k - t_{k-1})^2 + T^2.
+\end{align*}
+Let $\{\pi_m\}_{m\ge 1}$ be any increasingly fine sequence of partitions of $[0,T]$. We may conclude
+\begin{equation*}
+    \EE |Q_{\pi_m}(W) - T|^2 = \EE(Q_{\pi_m}(W)^2) - T^2 = 2 \sum_{k=1}^n (t_k - t_{k-1})^2 \le 2 \|\pi_m\| T \longrightarrow 0
+\end{equation*}
+as $m\to\infty$. The convergence in $L^2(\Omega,\mathcal{F},\PP)$ implies almost-sure convergence up to a subsequence, and hence $Q_T(W)=T$ in $L^2$. The last assertion follows from Exercise~\ref{exer:BV-quad}.
+\end{proof}
+
+\begin{definition}
+\label{def:cross-var}
+For a real-valued, adapted stochastic process $(X_t,\mathcal{F}_t)$, we denote the quadratic variation process of $X$ by $\braket{X}_t$.
+
+Now let $X_t, Y_t$ be $\RR$-valued stochastic processes. Given a partition $\pi = \{0=t_0<t_1<\ldots <t_n=T\}$ of $[0,T]$, we define
+\begin{equation*}
+    Q_\pi(X,Y) := \sum_{k=1}^n (X_{t_k}-X_{t_{k-1}})(Y_{t_k}-Y_{t_{k-1}}).
+\end{equation*}
+The \textbf{cross-variation} of $X$ and $Y$ on the interval $[0,T]$ is then defined as
+\begin{equation}
+\label{eq:cross-var-def}
+    \braket{X,Y}_T := \lim_{\|\pi\|\to 0} Q_\pi(X,Y),
+\end{equation}
+where the limit is taken in $L^2(\Omega,\mathcal{F},\PP)$.
+
+Finally, if $X_t=(X^1_t,\ldots,X^d_t)$ is an $\RR^d$-valued stochastic process, the cross-variation process $\braket{X}_t$ of $X$ is a matrix-valued process with entries defined as
+\begin{equation*}
+    \braket{X}_T^{ij} := \braket{X^i,X^j}_T.
+\end{equation*}
+\end{definition}
+
+Observe that $\braket{X,X}_T$ is just the quadratic variation of $X$ on $[0,T]$. The cross-variation bracket has many properties of an inner product.
+\begin{proposition}
+\label{prop:cross-var}
+The cross-variation bracket $\braket{\cdot, \cdot}$ satisfies the following properties, where all (in)equalities are understood to hold $\PP$-almost surely and for all $t\in [0,T]$:
+\begin{enumerate}[\upshape (i)]
+    \item $\braket{X}_t = \braket{X,X}_t \ge 0$.
+    \item $\braket{X,Y}_t = \braket{Y,X}_t$.
+    \item $\braket{aX + bY, Z}_t = a\braket{X,Z}_t + b\braket{Y,Z}_t$ for all $a,b\in\RR$.
+    \item \emph{(Polarisation)} $\braket{X, Y}_t = \frac{1}{2}(\braket{X+Y}_t - \braket{X}_t - \braket{Y}_t) = \frac{1}{4}(\braket{X+Y}_t - \braket{X-Y}_t)$.
+    \item \emph{(Cauchy-Schwarz)} $|\braket{X,Y}_t|^2\le \braket{X}_t \braket{Y}_t$.
+\end{enumerate}
+\end{proposition}
+If one assumes that the convergence~\eqref{eq:cross-var-def} holds, then the proofs are easy. Nevertheless it is quite a challenge to prove that the cross-variation exists for a sufficiently large class of processes. Moreover, the definition using partitions is certainly unwieldy, and there is a much more `natural' characterisation of quadratic variation from the point of view of martingale theory. We take these considerations for granted in the meantime, and direct the interested reader to well-known references such as~\cite[Chapter IV]{RY} and~\cite[Chapters I, III]{KS}.
+
+Observe that $\braket{\cdot,\cdot}$ is a bilinear form (on an appropriate space of processes), but fails to be a genuine inner product, since $\braket{X}_t=0$ need not imply that $X_t=0$ almost surely for all $t\in [0,T]$. Indeed, a counterexample is given by the trivial process $X_t=1$ for all $\omega\in\Omega$ and $t\in [0,T]$. More generally, by Exercise~\ref{exer:BV-quad}, any stochastic process $X$ for which almost every sample path belongs to $BV([0,T])\cap C([0,T])$ satisfies $\braket{X}_t=0$.
+
+In Theorem~\ref{thm:brownian-quadvar}, we computed $\braket{W}_t=t$ for all $t\ge 0$. This is a rather special result. It turns out that Brownian motion is essentially the unique process in the class of continuous martingales with this property. We state the following beautiful characterisation due to L\'{e}vy.
+\textcolor{red}{To include: Levy's martingale characterisation of BM, but maybe defer to chapter 6?}
+
+\subsection{Construction of the It\^{o} integral}
+The result of Theorem~\ref{thm:brownian-quadvar} shows the impossibility of defining an integral with respect to Brownian motion in a `pathwise' manner. To be precise, if we fix a sample point $\omega$, then the function $t\mapsto W_t(\omega)$ is continuous on $[0,\infty)$. However, since it is not of bounded variation on any interval $[0,T]$, we cannot interpret
+\begin{equation*}
+    \int_0^T X_t(\omega) dW_t(\omega)
+\end{equation*}
+literally in the Riemann-Stieltjes sense. Nevertheless, not all is lost, and some ideas from the Riemann-Stieltjes construction are still useful. Note that it is possible to define stochastic integrals of the type
+\begin{equation*}
+    \int_0^T F_t\,dM_t
+\end{equation*}
+for more general processes $(M_t)_{t\ge 0}$ (namely, continuous semimartingales), but for simplicity we will mainly consider the case of Brownian motion in these notes.
+
+We begin by defining a class of elementary processes for which there is a natural definition of stochastic integral. Throughout this section, we consider a filtered probability space $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$ where the filtration satisfies the \emph{usual conditions} (recall Definition~\ref{def:usual}).
+\begin{definition}
+\label{def:prog-meas}
+    A stochastic process $(X_t)_{t\ge 0}$ is called \textbf{progressively measurable} if for any $t\ge 0$, the mapping
+    \begin{equation*}
+        [0,t]\times\Omega\ni (s,\omega) \mapsto X_s(\omega)\in\RR
+    \end{equation*}
+    is measurable with respect to the product $\sigma$-algebra $\mathscr{B}([0,t])\otimes\mathcal{F}_t$.
+\end{definition}
+
+\begin{remark}
+\label{rmk:prog-meas}
+A stochastic process is called \textbf{measurable} if the mapping $(t,\omega)\mapsto X_t(\omega)$ is measurable with respect to $\mathscr{B}([0,\infty))\otimes\mathcal{F}$. A progressively measurable process is evidently measurable, and one can check that it is also $\mathcal{F}_t$-adapted. The converse statement `almost' holds, due to the following theorem of Chung and Doob: if $X$ is a measurable, $\mathcal{F}_t$-adapted process, then there exists a progressively measurable version $\widetilde{X}$ of $X$. This is a non-trivial result, and we will not include the technical proof, see~\cite[Theorem T46, p.\ 68]{Mey}.
+\end{remark}
+
+\begin{definition}
+Let $(\Omega,\mathcal{F},\PP)$ be a probability space with a filtration $(\mathcal{F}_{t})_{t \ge 0}$ satisfying the usual conditions. We say that $(F_t)_{t \ge 0}$ is an \textbf{elementary process} if it is of the form
+\begin{equation*}
+    F_t = \sum_{i=1}^n A_{i-1} \mathbf{1}_{(t_{i-1}, t_i]}(t)
+\end{equation*}
+for some partition $\{ t_0 = 0 < t_1 < t_2 < \ldots < t_n = T \}$ of $[0,T]$, where for each $1\le i\le n$, the random variable $A_{i-1}:\Omega\to\RR$ is $\mathcal{F}_{t_i-1}$-measurable. We denote by $\mathcal{E}^2(0, T)$ the set of all elementary processes on $[0,T]$ satisfying $\EE|F_t|^2 < \infty$ for all $t\in [0,T]$.
+\end{definition}
+
+\begin{exercise}
+\label{exer:vector-space-elem-process}
+    Verify that $\mathcal{E}^2(0,T)$ is a real vector space, and that every elementary process $F\in\mathcal{E}^2(0,T)$ is progressively measurable. 
+    % [\emph{Remark/Hint}: It is enough to check that if $(r,s]\subset [0,T]$ and the random variable $A$ is $\mathcal{F}_t$-measurable, then the function $(t,\omega)\mapsto A(\omega)\mathbf{1}_{(r,s]}(t)$ is measurable with respect to $\mathscr{B}([0,t])\otimes\mathcal{F}_t$.]
+\end{exercise}
+
+For each $F\in\mathcal{E}^2(0,T)$, we observe that
+\begin{equation*}
+    |F_t|^2 = \sum_{i=1}^n A_{i-1}^2\mathbf{1}_{(t_{i-1},t_i]}(t),
+\end{equation*}
+since the indicator functions $\mathbf{1}_{(t_{i-1},t_i]}$ are disjoint. If we define the functional
+\begin{equation}
+\label{eq:norm-LL2}
+    \|F\|_{\mathbb{L}^2} := \left( \EE \int_0^T |F_t|^2 \,dt \right)^{1/2},
+\end{equation}
+then clearly $\|F\|_{\mathbb{L}^2} <\infty$ for all $F\in\mathcal{E}^2(0,T)$, and~\eqref{eq:norm-LL2} defines a norm on $\mathcal{E}^2(0,T)$.
+
+\begin{definition}[It\^{o} integral for elementary processes]
+    Let $(W_t)_{t\ge 0}$ be a standard one-dimensional Brownian motion defined on the filtered probability space $(\Omega,\mathcal{F},(\mathcal{F}_t)_{t\ge 0},\PP)$. Let $F\in\mathcal{E}^2(0,T)$ be given, so that $F_t=\sum_{i=1}^n A_{i-1}\mathbf{1}_{(t_{i-1},t_i]}(t)$ for some partition $0=t_0<t_1<\ldots <t_n=T$ and $\mathcal{F}_{t_{i-1}}$-measurable random variables $A_{i-1}$. We define
+    \begin{equation}
+    \label{eq:ito-elementary}
+        \int_0^T F_t\, dW_t := I_T(F) := \sum_{i=1}^n A_{i-1}(W_{t_i}-W_{t_{i-1}}).
+    \end{equation}
+\end{definition}
+
+It is essential to recognise that $I_T(F)$ is a \emph{random variable}. The basic properties of this integral are collected below.
+\begin{lemma}
+\label{lem:elem-integral}
+    Let $F, G\in\mathcal{E}^2(0,T)$. The following assertions hold:
+    \begin{enumerate}[\upshape (i)]
+        \item $I_T(F)$ is $\mathcal{F}_T$-measurable, and $\EE[I_T(F)]=0$.
+        \item \emph{(Isometry)} The map
+        \begin{equation*}
+            \mathcal{E}^2(0,T)\ni F \mapsto I_T(F) \in L^2(\Omega,\mathcal{F},\PP)
+        \end{equation*}
+        is a linear isometry, and $\EE|I_T(F)|^2 = \|F\|^2_{\mathbb{L}^2}$.
+        \item \emph{(Inner product)} $\braket{F,G}_{\mathbb{L}^2}:= \EE[I_T(F) I_T(G)]$ is well-defined, and
+        \begin{equation*}
+            \braket{F,G}_{\mathbb{L}^2} = \EE\int_0^T F_t\cdot G_t \,dt.
+        \end{equation*}
+    \end{enumerate}
+\end{lemma}
+
+\begin{proof}
+For convenience, we write $\Delta W_i := W_{t_i}-W_{t_{i-1}}$ for Brownian increments.
+
+(i): It is clear that $I_T(F)$ is $\mathcal{F}_T$-measurable. Since each $A_{i-1}$ is $\mathcal{F}_{t_{i-1}}$-measurable, in particular it is independent of the Brownian increment $\Delta W_i$. Hence
+\begin{equation*}
+    \EE[I_T(F)] = \sum_{i=1}^n \EE(A_{i-1}\Delta W_i) = \sum_{i=1}^n \EE(A_{i-1})\EE(\Delta W_i) = 0.
+\end{equation*}
+
+(ii): It is immediate from the definition~\eqref{eq:ito-elementary} that $I_T(\lambda F)=\lambda I_T(F)$ for any $\lambda\in\RR$. Additivity of the integral is left as an exercise (the details are similar to Exercise~\ref{exer:vector-space-elem-process}).
+
+To prove the isometry property, we observe firstly that for positive integers $j<k$, the random variable $A_{j-1}A_{k-1}\Delta W_j$ is $\mathcal{F}_j$-measurable, and hence independent of $\Delta W_k$. Then we compute
+\begin{align*}
+    \EE|I_T(F)|^2 &= \EE\left( \sum_{k=1}^n A_{k-1}\Delta W_k \right)^2 \\
+    &= \sum_{j,k=1}^n \EE(A_{j-1}A_{k-1}\Delta W_j \Delta W_k) \\
+    &= \sum_{k=1}^n \EE[A_{k-1}^2 (\Delta W_k)^2] + 2\sum_{j<k}\EE(A_{j-1}A_{k-1}\Delta W_j \Delta W_k) \\
+    &= \sum_{k=1}^n \EE(A_{k-1}^2) \EE((\Delta W_k)^2) + 2\sum_{j<k}\EE(A_{j-1}A_{k-1}\Delta W_j)\EE(\Delta W_k) \\
+    &= \sum_{k=1}^n \EE(A_{k-1}^2)(t_k-t_{k-1}) + 0 = \EE\int_0^T |F_t|^2\,dt = \|F\|^2_{\mathbb{L}^2}.
+\end{align*}
+
+(iii): This follows from (ii) via the polarisation formula $ab = \frac{1}{4}[(a+b)^2 - (a-b)^2]$, and the reader may easily verify the details.
+\end{proof}
+
+The isometry property of the integral~\eqref{eq:ito-elementary} is extremely important. It allows us to extend the definition to a larger class of stochastic processes.
+\begin{definition}
+    Two adapted stochastic processes $X$ and $Y$ defined on $[0,\infty)$ are \textbf{equivalent} if
+    \begin{equation*}
+        X_t(\omega)=Y_t(\omega) \quad\text{for $\lambda^1\otimes\PP$-almost every }(t,\omega),
+    \end{equation*}
+    where $\lambda^1$ is the Lebesgue measure on $[0,\infty)$. We define $\mathbb{L}^2_W(0,T)$ to be the space of equivalence classes of processes $X:[0,\infty)\times\Omega\to\RR$ such that
+    \begin{enumerate}[\upshape (i)]
+        \item $X$ is progressively measurable (see Definition~\ref{def:prog-meas}); and
+        \item $\|X\|^2_{\mathbb{L}^2(0,T)} = \EE\int_0^T |X_t|^2\,dt <\infty$.
+    \end{enumerate}
+\end{definition}
+
+\begin{remark}
+\label{rmk:equivalence}
+    The definition of equivalence introduced above actually depends on the quadratic variation of the process for which we will construct the stochastic integral. This is why we write $\mathbb{L}^2_W(0,T)$ to emphasise the dependence on Brownian motion. Recall that $\braket{W}_t=t$, and so the integral with respect to $dt$ is simply the usual Lebesgue integral. For integration with respect to a more general continuous martingale $M$, we need to consider the measure $d\braket{M}_t$. Details can be found on~\cite[p.\ 130]{KS}.
+\end{remark}
+
+Since we mainly consider stochastic integrals with respect to Brownian motion in these notes, we will drop the subscript $W$ and simply write $\mathbb{L}^2(0,T)$. Clearly this space embeds into the Hilbert space
+\begin{equation*}
+    \mathcal{H}_T := L^2([0,T]\times\Omega, \mathscr{B}([0,T])\otimes\mathcal{F}, \lambda^1\otimes\PP).
+\end{equation*}
+
+\begin{lemma}
+    For any $0<T\le\infty$, the space $\mathbb{L}^2(0,T)$ is a closed subspace of $\mathcal{H}_T$, and hence is a Hilbert space with respect to the norm~\eqref{eq:norm-LL2}.
+\end{lemma}
+
+\begin{proof}
+    Let $(X^{(n)})_{n\ge 1}$ be a convergent sequence in $\mathbb{L}^2(0,T)$ with limit $X\in\mathcal{H}_T$. By passing to a subsequence if necessary, we may assume that $X^{(n)}$ converges to $X$ for $\lambda^1\otimes\PP$-almost every $(t,\omega)$. Then $X$ is $\mathscr{B}([0,T])\otimes\mathcal{F}$-measurable, but \emph{a priori} we do not know if it is progressively measurable. To rectify this, define
+    \begin{equation*}
+        A := \left\{(t,\omega)\in [0,T]\times\Omega : \lim_{n\to\infty}X^{(n)}_t(\omega) \text{ exists in }\RR \right\}
+    \end{equation*}
+    and
+    \begin{equation*}
+        Y_t(\omega) := \mathbf{1}_A(t,\omega)\lim_{n\to\infty}X^{(n)}_t(\omega).
+    \end{equation*}
+    By construction, $Y$ is equivalent to $X$, and inherits progressive measurability from the sequence $(X^{(n)})_{n\ge 1}$. Thus we conclude $X\in\mathbb{L}^2(0,T)$.
+\end{proof}
+
+\begin{theorem}
+\label{thm:approx-processes}
+    The space of elementary processes $\mathcal{E}^2(0,T)$ is dense in $\mathbb{L}^2(0,T)$.
+\end{theorem}
+
+\begin{proof}
+    Let $X\in\mathbb{L}^2(0,T)$ be given. The proof requires a 3-step approximation.
+
+    \emph{Step 1}: We first approximate $X$ by bounded processes. This is accomplished easily by defining
+    \begin{equation*}
+        X^{(n)}_t(\omega) := X_t(\omega) \mathbf{1}_{[-n,n]}(X_t(\omega)).
+    \end{equation*}
+    Obviously $X^{(n)}_t(\omega) \to X_t(\omega)$ pointwise in $(t,\omega)$ as $n\to\infty$. By the dominated convergence theorem, we have that $\|X^{(n)}-X\|_{\mathbb{L}^2(0,T)} \to 0$ as $n\to\infty$.
+
+    \emph{Step 2}: Next, we show that a bounded process $Y\in\mathbb{L}^2(0,T)$ can be approximated by bounded processes with continuous paths. This is the tricky step. We can construct a sequence $(\psi_n)_{n\ge 1}$ of non-negative continuous functions satisfying
+    \begin{enumerate}[(i)]
+        \item $\mathrm{spt}(\psi_n)\subseteq [-\frac{1}{n},0]$; and
+        \item $\int_\RR \psi_n(x)\,dx = 1$ for all $n\ge 1$.
+    \end{enumerate}
+    Then define the processes $Y^{(n)}$ by convolutions:
+    \begin{equation}
+    \label{eq:}
+        Y^{(n)}(t,\omega) := \int_\RR \psi_n(s-t)Y(s,\omega)\,ds = \int_0^t \psi_n(s-t)Y(s,\omega)\,ds,
+    \end{equation}
+    where we trivially extend $Y(s,\omega)=0$ for $s\le 0$, for all $\omega$. Exercise~\ref{exer:step2} below shows that each $Y^{(n)}$ is a bounded process with continuous paths. Importantly, each $Y^{(n)}_t$ is progressively measurable, but this not immediate---see Remark~\ref{rmk:prog-meas-2} below. For each $\omega$, we have that
+    \begin{equation*}
+        \int_0^T |Y^{(n)}(s,\omega)-Y(s,\omega)|^2\,ds \to 0
+    \end{equation*}
+    as $n\to\infty$, since $(\psi)_{n\ge 1}$ forms an approximate identity. Hence $\|Y^{(n)}-Y\|_{\mathbb{L}^2(0,T)} \to 0$ as $n\to\infty$, by dominated convergence.
+
+    \emph{Step 3}: Finally, every continuous, bounded, progressively measurable process $Z$ can be approximated by elementary processes. Given a sequence of partitions $\pi_m=\{0=t_0<t_1<\ldots< t_{m_n}=T\}$ of $[0,T]$, we define
+    \begin{equation*}
+        Z^{(n)}(t,\omega):= \sum_{k=1}^{m_n} Z(t_{k-1},\omega)\mathbf{1}_{(t_{k-1},t_k]}(t).
+    \end{equation*}
+    Then each $Z^{(n)}$ is elementary, since $Z_{t_{k-1}}$ is $\mathcal{F}_{t_{k-1}}$-measurable. Moreover, the continuity of $t\mapsto Z(t,\omega)$ for each $\omega$ yields that
+    \begin{equation*}
+        \int_0^T |Z^{(n)}(t,\omega)-Z(t,\omega)|^2\,dt
+    \end{equation*}
+    as $n\to\infty$, for each $\omega$. Thus we conclude $\|Z^{(n)}-Z\|_{\mathbb{L}^2(0,T)}\to 0$ as $n\to\infty$ by dominated convergence. This completes the proof.
+\end{proof}
+
+\begin{exercise}
+\label{exer:step2}
+    (i): Consider the continuous function $\psi:\RR\to [0,\infty)$ defined by
+    \begin{equation*}
+        \psi(s) := 2(1-|2s+1|)\vee 0.
+    \end{equation*}
+    Verify that the sequence $\psi_n(x):=n\psi(nx)$ satisfies the conditions required for Step 2 in the proof of Theorem~\ref{thm:approx-processes}.
+
+    (ii): Assume that $|Y(t,\omega)|\le M$ for all $(t,\omega)$. Show that, for every $n\ge 1$, the map $t\mapsto Y^{(n)}(t,\omega)$ is continuous for every $\omega$, and $|Y^{(n)}(t,\omega)|\le M$.
+\end{exercise}
+
+\begin{remark}
+\label{rmk:prog-meas-2}
+    (i): We quote the following result from~\cite[Problem 1.2.19]{KS}: let $(X_t)_{t\ge 0}$ be an $\RR^d$-valued progressively measurable process, and $f:[0,\infty)\times\RR^d\to\RR$ be a bounded, $\mathscr{B}([0,\infty))\otimes\mathscr{B}(\RR^d)$ measurable function. Then the process
+    \begin{equation*}
+        Y_t := \int_0^t f(s,X_s)\,ds, \quad t\ge 0
+    \end{equation*}
+    is progressively measurable.
+
+    (ii): In many advanced texts on stochastic calculus, stochastic integration is usually developed in the context of a general theory of continuous martingales. In Theorem~\ref{thm:approx-processes} we adopt the more `hands-on' analytic approach, as seen for example in~\cite[Section 3.1]{Ok03}.
+\end{remark}
+
+Using Theorem~\ref{thm:approx-processes}, we can define the It\^{o} integral for all $X\in\mathbb{L}^2(0,T)$.
+\begin{definition}
+    Let $X\in\mathbb{L}^2(0,T)$. The \textbf{It\^{o} integral} of $X$ on $[0,T]$ is defined by
+    \begin{equation}
+        \int_0^T X_t dW_t := \lim_{n\to\infty}\int_0^T F^{(n)}_t\,dW_t, \quad\text{limit in }L^2(\Omega,\mathcal{F},\PP),
+    \end{equation}
+    for any sequence $(F^{(n)})_{n\ge 1}\subset\mathcal{E}^2(0,T)$ of elementary processes such that $\|F^{(n)}-X\|_{\mathbb{L}^2(0,T)}\to 0$ as $n\to\infty$.
+\end{definition}
+Of course, the definition does not depend on the choice of approximating sequence. Moreover, the integral satisfies all the properties listed in Lemma~\ref{lem:elem-integral}. We restate the properties below for the reader's convenience.
+\begin{proposition}
+\label{prop:ito-integral}
+    Let $F, G\in\mathbb{L}^2(0,T)$. The following assertions hold:
+    \begin{enumerate}[\upshape (i)]
+        \item $I_T(F)$ is $\mathcal{F}_T$-measurable, and $\EE[I_T(F)]=0$.
+        \item \emph{(Isometry)} The map
+        \begin{equation*}
+            \mathbb{L}^2(0,T)\ni F \mapsto I_T(F) \in L^2(\Omega,\mathcal{F},\PP)
+        \end{equation*}
+        is a linear isometry, and $\EE|I_T(F)|^2 = \|F\|^2_{\mathbb{L}^2}$.
+        \item \emph{(Inner product)} $(F,G)_{\mathbb{L}^2}:= \EE[I_T(F) I_T(G)]$ is well-defined, and
+        \begin{equation*}
+            (F,G)_{\mathbb{L}^2} = \EE\int_0^T F_t\cdot G_t \,dt.
+        \end{equation*}
+    \end{enumerate}
+\end{proposition}
+
+The proofs follow from simple reasoning with limits. We observe in particular that because the isometry property holds on the dense subspace $\mathcal{E}^2(0,T)$, the linear map $F\mapsto I_T(F)$ extends in a unique way to $\mathbb{L}^2(0,T)$.
+
+Finally, we define indefinite stochastic integrals and `stopped' integrals.
+\begin{definition}
+    Let $0<T\le\infty$ and $X\in\mathbb{L}^2(0,T)$. Given a stopping time $\tau$ such that $\tau\le T$ almost surely, define
+    \begin{equation}
+    \label{eq:integral-stopping-time}
+        \int_0^\tau X_t \,dW_t := \int_0^T \mathbf{1}_{(t\le\tau)}(t) X_t\,dW_t.
+    \end{equation}
+    As a special case, if $\tau=t$ (i.e.\ a deterministic time), we obtain the \textbf{indefinite I\^{o} integral}
+    \begin{equation*}
+        I_t(X) = \int_0^t X_s\,dW_s, \qquad t\ge 0.
+    \end{equation*}
+\end{definition}
+We note that~\eqref{eq:integral-stopping-time} is well-defined, since $\EE\int_0^T |\mathbf{1}_{(t\le\tau)}X_t|^2\,dt \le \EE\int_0^T |X_t|^2\,dt<\infty$, and it can be shown that $\mathbf{1}_{(t\le\tau)}(t)X_t$ is progressively measurable. Hence $\mathbf{1}_{(t\le\tau)}(\cdot)X\in\mathbb{L}^2(0,T)$.
+
+Integrals over other time intervals are defined in a way similar to~\eqref{eq:integral-stopping-time}. If $0\le s<t\le T$, then we set
+\begin{equation*}
+    \int_s^t X_r\,dW_r := \int_0^T \mathbf{1}_{[s,t]}(r)X_r\,dW_r
+\end{equation*}
+for all $X\in\mathbb{L}^2(0,T)$. It is then clear that
+\begin{equation*}
+    \int_s^t X_r\,dW_r = \int_s^u X_r\,dW_r + \int_u^t X_r\,dW_r
+\end{equation*}
+for all $0\le s<u<t\le T$.
+
+One of the most important properties of the indefinite It\^{o} integral is that it is a continuous martingale.
+\begin{theorem}
+\label{thm:ito-integral-mart}
+    Let $F\in\mathbb{L}^2(0,T)$. Then the process $I_t(F) = \int_0^t F_s \,dW_s$ is an $\mathcal{F}_t$-martingale with a continuous version.
+\end{theorem}
+
+\begin{proof}
+    We prove the martingale property for $F\in\mathcal{E}^2(0,T)$ first. Suppose that $F$ has the decomposition
+    \begin{equation*}
+        F_t = \sum_{k=1}^m A_{k-1}\mathbf{1}_{(t_{k-1},t_k]}(t).
+    \end{equation*}
+    The proof of Theorem~\ref{thm:approx-processes} shows that we may assume $F_t$ is almost surely bounded for each $t$. In particular, we may assume that each $A_{j}$ is almost surely bounded.
+    
+    For $s<t$, we have
+    \begin{align*}
+        \EE\left(\int_0^t F_u\,dW_u \bigg\vert\mathcal{F}_s\right) &= \EE\left(\int_0^s F_u\,dW_u + \int_s^t F_u\,dW_u \bigg\vert\mathcal{F}_s\right) \\
+        &= I_s(F) + \EE\left(\int_s^t F_u\,dW_u \bigg\vert\mathcal{F}_s\right),
+    \end{align*}
+    using the fact that $I_s(F) = \int_0^s F_u\,dW_u$ is $\mathcal{F}_s$-measurable. Next, we write $\Delta W_k = W_{t_k}-W_{t_{k-1}}$, and thus
+    \begin{equation*}
+        \int_s^t F_u\,dW_u = \sum_{s\le t_{k-1}<t_k\le t} A_{k-1}\Delta W_k,
+    \end{equation*}
+    where the sum only involves points of the partition $\{0=t_0<t_1<\ldots <t_m=T\}$ contained in the interval $[s,t]$. Using that $A_{k-1}\Delta W_k$ is $\mathcal{F}_s$-measurable and Proposition~\ref{prop:take-out-known} (`taking out what is known'), we compute
+    \begin{align*}
+        \EE\left(\int_s^t F_u\,dW_u \bigg\vert\mathcal{F}_s\right) &= \sum_{s\le t_{k-1}<t_k\le t} \EE[A_{k-1}\Delta W_k|\mathcal{F}_s] \\
+        &= \sum_{s\le t_{k-1}<t_k\le t} \EE[\EE(A_{k-1}\Delta W_k|\mathcal{F}_{t_{k-1}})|\mathcal{F}_s] \\
+        &= \sum_{s\le t_{k-1}<t_k\le t} \EE[A_{k-1}\EE(\Delta W_k|\mathcal{F}_{t_{k-1}})|\mathcal{F}_s] = 0.
+    \end{align*}
+    In the last step, we recalled that $\Delta W_k$ is independent of $\mathcal{F}_{t_{k-1}}$, and hence $\EE(\Delta W_k|\mathcal{F}_{t_{k-1}})=\EE(\Delta W_k)=0$. We have thus shown the martingale property
+    \begin{equation*}
+        \EE(I_t(F)|\mathcal{F}_s) = I_s(F)
+    \end{equation*}
+    for all $F\in\mathcal{E}^2(0,T)$. The integrability of $I_t(F)$ follows from the H\"{o}lder inequality and the It\^{o} isometry:
+    \begin{equation*}
+        \EE|I_t(F)| \le \EE|I_t(F)|^2 = \EE\int_0^t |F_s|^2\,ds \le \|F\|^2_{\mathbb{L}^2(0,T)}<\infty.
+    \end{equation*}
+    
+    Let $(F^{(n)}_t)_{t\ge 0}$ be a sequence of elementary processes such that $\|F^{(n)}-F||_{\mathbb{L}^2(0,T)}\to 0$ as $n\to\infty$.
+    \textcolor{red}{proof of continuity: requires Borel-Cantelli and Doob maximal inequality, complete later}
+\end{proof}
+
+As a consequence of Theorem~\ref{thm:ito-integral-mart}, when we consider a stochastic integral with respect to Brownian motion, by convention we will always take a continuous version.
+
+% \subsection{Extending the It\^{o} integral}

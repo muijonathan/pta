@@ -1,0 +1,97 @@
+\documentclass[11pt]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{newpxtext}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=3cm,right=3cm,marginparwidth=2.1cm]{geometry}
+
+\usepackage[UKenglish]{isodate}
+\cleanlookdateon % Better looking date format
+
+%% Useful packages
+\usepackage{amsmath, amsthm, amssymb, mathrsfs}
+\usepackage{enumerate, braket}
+\usepackage{graphicx, xcolor}
+\usepackage[colorlinks=true]{hyperref}
+\hypersetup{urlcolor=magenta, linkcolor=blue, citecolor=red}
+
+%\usepackage[hang]{footmisc}
+%\setlength{\footnotemargin}{2mm}
+
+\numberwithin{equation}{section}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{example}[theorem]{Example}
+%\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+%%% Math operators
+\DeclareMathOperator{\dist}{dist}
+\DeclareMathOperator{\dv}{div}
+\DeclareMathOperator{\tr}{tr}
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\RR}{\mathbb{R}}
+
+% Probability
+\newcommand{\EE}{\mathbf{E}}
+\newcommand{\PP}{\mathbf{P}}
+\DeclareMathOperator{\Cov}{Cov}
+
+\title{\bf Probabilistic Tools for Analysts}
+\author{Jonathan Mui\footnote{University of Sydney, \href{mailto:jonathan.mui@sydney.edu.au}{jonathan.mui@sydney.edu.au}}}
+\date{latest update: \today}
+
+%\newcommand{\sideremark}[1]{\marginpar{\footnotesize #1}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    This is a brief set of notes written for graduate students who have a strong foundation in analysis (real and complex analysis, measure theory and functional analysis), but who have had little exposure to stochastic analysis. It covers some of the most fundamental tools in this field --- martingales, stopping times, Brownian motion, and It\^{o} calculus --- together with the basic theory of (ordinary) stochastic differential equations. Hopefully these notes will serve as a convenient starting point for further study of the subject itself, and for the application of probabilistic methods to other areas of analysis (partial differential equations, harmonic analysis, geometric analysis, dynamical systems, \ldots). Much of the material is based on the lectures for the honours/masters level courses STAT4528 and MATH4512 at the University of Sydney in 2021, taught by Dr.\ Anna Aksamit and Prof.\ Ben Goldys.
+\end{abstract}
+
+\tableofcontents
+
+% Foundations
+\include{1-basics.tex}
+
+% Processes
+\include{2-processes.tex}
+
+% BM
+\include{3-BM.tex}
+
+% Ito integral
+\include{4-Ito-integral.tex}
+
+% Stochastic calculus
+\include{5-stoch-calc.tex}
+
+% Semimartingales
+\include{6-mart.tex}
+
+% Existence and uniqueness for SDE
+\include{7-SDE.tex}
+
+% Applications to PDE
+%\include{8-PDE.tex}
+
+\nocite{*}
+\bibliographystyle{alphaurl}
+\bibliography{PTA-refs}
+
+\end{document}

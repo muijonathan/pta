@@ -1,0 +1,397 @@
+\section{Stochastic calculus and the It\^{o} formula}
+Experience with Riemann integration shows that it is one thing to develop a theory of integration and another problem entirely to compute explicit integrals. No doubt a large part of the success of the theory stochastic integration is due to the robust computational tools available, namely the \emph{stochastic calculus}. The fundamental tool of this calculus is the \emph{It\^{o} formula}, or the \emph{stochastic chain rule}.
+
+Throughout this chapter, we employ the same notations and conventions as Chapter 4.
+
+\subsection{Computations from first principles}
+Before we develop the basic rules of stochastic calculus, it is important to compute some special cases of stochastic integrals from first principles.
+
+\begin{lemma}
+\label{lem:WdW}
+Let $(W_t)_{t\ge 0}$ be a standard one-dimensional Brownian motion, and let $\pi^n=\{0=t_0^n<t_1^n<\ldots <t_{m_n}^n=T\}$ be a sequence of partitions of $[0,T]$ such that $\|\pi^n\|\to 0$ as $n\to\infty$. Define
+\begin{equation*}
+    R_\lambda^n := \sum_{k=1}^{m_n} W(\tau^n_k)[W(t_k^n)-W(t_{k-1}^n)].
+\end{equation*}
+where $\tau_k^n := (1-\lambda)t_{k-1}^n - \lambda t_k^n$ is an intermediate point. Then
+\begin{equation}
+    \lim_{n\to\infty} R_n^\lambda = \frac{W(T)^2}{2} + \left(\lambda-\frac{1}{2}\right)T, \quad\text{limit in } L^2(\Omega,\mathcal{F},\PP).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+    We employ a very sneaky algebraic trick:
+    \begin{equation*}
+        b(c-a) = (b-a)(c-a) + \frac{1}{2}(c^2-a^2) - \frac{1}{2}(c-a)^2.
+    \end{equation*}
+    Then
+    \begin{align*}
+        R_\lambda^n &= \sum_{k=1}^{m_n}[W(\tau_k^n)-W(t_{k-1}^n)][W(t_k^n)-W(t_{k-1}^n)] + \frac{1}{2}\sum_{k=1}^{m_n} [W(t_k^n)^2-W(t_{k-1}^n)^2] \\
+        &\qquad\qquad -\frac{1}{2}\sum_{k=1}^{m_n}[W(t_k^n)-W(t_{k-1}^n)]^2 \\
+        &=: A_n + B_n - C_n.
+    \end{align*}
+    The sum appearing in $B_n$ is telescoping, and hence we obtain
+    \begin{equation*}
+        B_n = \frac{1}{2}[W(t^n_{m_n})^2 - W(t^n_0)^2] = \frac{W(T)^2}{2}
+    \end{equation*}
+    for all $n\ge 1$. The sum in $C_n$ converges in $L^2(\Omega)$ to the quadratic variation of $W$ on $[0,T]$ as $n\to\infty$, and thus $C_n \to \frac{T}{2}$ as $n\to\infty$ (see Theorem~\ref{thm:brownian-quadvar}).
+
+    Next, we rewrite
+    \begin{align*}
+        A_n &= \sum_{k=1}^{m_n} [W(\tau_k^n)-W(t_{k-1}^n)]^2 + \sum_{k=1}^{m_n} [W(\tau_k^n)-W(t_{k-1}^n)][W(t_k^n)-W(\tau_k^n)] \\
+        &=: D_n + E_n.
+    \end{align*}
+    By adapting the proof of Theorem~\ref{thm:brownian-quadvar}, one shows easily that $D_n\to \lambda T$ in $L^2(\Omega)$ as $n\to\infty$. We also leave it as a simple (but slightly tedious) exercise to show that $E_n\to 0$ in $L^2(\Omega)$ as $n\to\infty$, using the independence of Brownian increments.
+\end{proof}
+
+Lemma~\ref{lem:WdW} shows that the limit of the Riemann sums $R_\lambda^n$ \emph{depends on the choice} of intermediate points! Observe that the It\^{o} integral corresponds to $\lambda=0$ (left end-points). Thus Lemma~\ref{lem:WdW} establishes the result
+\begin{equation*}
+    \int_0^T W_t \,dW_t = \frac{W(T)^2}{2}-\frac{T}{2}
+\end{equation*}
+from first principles. There is an extra term $\frac{T}{2}$ --- the \emph{It\^{o} correction} --- which does not appear in deterministic integration. A more useful way to rewrite the formula above is to recall that the $T$ is the quadratic variation of $W$ on $[0,T]$. Thus
+\begin{equation}
+\label{eq:WdW-ito}
+    \int_0^t W_s\,dW_s = \frac{1}{2}(W_t^2 - \braket{W}_t), \qquad t\in [0,T].
+\end{equation}
+Formula~\eqref{eq:WdW-ito} suggests the formal derivative
+\begin{equation*}
+    \text{``}d(W^2) = 2WdW + d\braket{W}_t\text{''}.
+\end{equation*}
+We will see later that It\^{o}'s chain rule essentially says that the stochastic differential (to be defined shortly) of a composition always looks like the deterministic chain rule plus a correction involving the quadratic variation of the integrand.
+
+We now give a formal meaning to the \emph{stochastic differential}. To do so, we introduce the space $\mathbb{L}^1(0,T)$, which is defined similarly to $\mathbb{L}^2(0,T)$. Namely, it is the (Banach) space of progressively measurable processes $X$ such that
+\begin{equation*}
+    \|X\|_{\mathbb{L}^1(0,T)} := \EE\int_0^T |X_t|\,dt<\infty.
+\end{equation*}
+
+\begin{definition}[Stochastic differentials]
+    Let $X$ be a real-valued stochastic process satisfying
+    \begin{equation*}
+        X_t = X_0 + \int_0^t F_s\,ds + \int_0^t G_s\,dW_s \quad\text{$\PP$-almost surely}
+    \end{equation*}
+    for some $F\in\mathbb{L}^1(0,T)$ and $G\in\mathbb{L}^2(0,T)$, and for all $0\le t\le T$. We say that $X$ has stochastic differential
+    \begin{equation}
+        dX = Fdt + GdW \qquad\text{on }[0,T].
+    \end{equation}
+\end{definition}
+It is important to note that the symbols $dt, dW$ have no meaning alone --- they are \emph{defined} as abbreviations of the integral expression.
+
+We compute another special case of a stochastic differential.
+\begin{lemma}
+\label{lem:BV-times-W}
+    Let $f\in BV([0,T])$ (recall Definition~\ref{def:BV}). Then
+    \begin{equation*}
+        d(fW) = Wdf + fdW,
+    \end{equation*}
+    where the term $Wdf$ is interpreted as the usual Riemann-Stieltjes integral.
+\end{lemma}
+
+\begin{proof}
+    Let $0\le r<s\le T$. The stochastic differential, by definition, means that
+    \begin{equation*}
+        W(s)f(s)-W(r)f(r) = \int_r^s W \,df + \int_r^s f\,dW.
+    \end{equation*}
+    Fix a partition $\pi=\{r=t_0<t_1<\ldots <t_n=s\}$ of $[r,s]$. We consider the telescoping sum
+    \begin{align*}
+        W(s)f(s)-W(r)f(r) &= \sum_{k=1}^n W(t_k)f(t_k) - W(t_{k-1})f(t_{k-1})\\
+        &= \sum_{k=1}^n f(t_{k-1})[W(t_k)-W(t_{k-1})] + \sum_{k=1}^n W(t_k)[f(t_k)-f(t_{k-1})] \\
+        &=: A + B.
+    \end{align*}
+    Since $f$ is a bounded deterministic function, it can be trivially considered as an element of $\mathbb{L}^2(0,T)$. Hence, by the definition of the It\^{o} integral, we have that $A$ converges in $L^2(\Omega)$ to $\int_r^s f\,dW$ as $\|\pi\|\to 0$. 
+    
+    Observe that in the term $B$, we evaluate $W$ at the \emph{right} end-point of each partition interval. However, since $W$ is almost-surely continuous and $f$ is of bounded variation, this is just a `usual' Riemann sum. Hence $B$ converges almost-surely, and also in $L^2(\Omega)$ by dominated convergence, to the Riemann-Stieltjes integral $\int_r^s W\,df$ as $\|\pi\|\to 0$.
+\end{proof}
+
+\subsection{The product rule}
+In this section, we prove the stochastic product rule (or integration by parts).
+
+\begin{theorem}
+\label{thm:stoch-prod-rule}
+Suppose $X,Y$ are real-valued stochastic processes on $[0,T]$ with differentials given by
+\begin{equation*}
+    dX = F_1 dt + G_1 dW, \qquad dY = F_2 dt + G_2 dW,
+\end{equation*}
+where $F_i\in\mathbb{L}^1(0,T)$ and $G_i\in\mathbb{L}^2(0,T)$. Then
+\begin{equation}
+    d(XY) = XdY + YdX + G_1 G_2 dt.
+\end{equation}
+\end{theorem}
+
+Theorem~\ref{thm:stoch-prod-rule} is often derived as a simple consequence of the (multidimensional version of the) It\^{o} chain rule. However, it can also be established directly using martingale theory, and it is perhaps more useful to view it this way. While we will not dive into the technical details in this section, let us discuss the key ideas. Firstly, we compute the cross-variation process $\braket{X,Y}$ (recall Definition~\ref{def:cross-var}). Write 
+\begin{equation*}
+    X_t = X_0 + \int_0^t F_1\,dt + \int_0^t G_1\,dW =: X_0 + A_t + M_t
+\end{equation*}
+and similarly $Y_t = Y_0 + B_t + N_t$ with analogous definitions. Importantly, the processes $A,B$ are continuous and have bounded variation on $[0,T]$. Indeed, since $F_i\in\mathbb{L}^1(0,T)$, the functions $t\mapsto F^i(t,\omega)$ belong to (the usual!) $L^1(0,T)$ for almost every $\omega$, and then one can verify that primitives of $L^1(0,T)$ functions have the stated properties. Note also that $M, N$ are continuous martingales (recall Theorem~\ref{thm:ito-integral-mart}).
+
+Since the cross-variation is a bilinear form, and clearly the cross-variation of a time-independent random variable with any stochastic process is $0$ almost surely, we obtain
+\begin{align*}
+    \braket{X,Y}_t &= \braket{X_0+A+M,Y_0+B+N}_t \\
+    &= \braket{A,B}_t + \braket{A,N}_t + \braket{M,B}_t + \braket{M,N}_t.
+\end{align*}
+We leave it as an exercise to show that all terms except $\braket{M,N}_t$ are equal to $0$ almost surely.
+
+\begin{exercise}
+\label{exer:quad-var-BV}
+\begin{enumerate}[\upshape (i)]
+    \item Let $f\in L^1(0,T)$. Verify in detail that the function
+    \begin{equation*}
+        F(t) := \int_0^t f(s)\,ds
+    \end{equation*}
+    belongs to $BV(0,T)\cap C([0,T])$.
+
+    \item (Important!) Let $X$ be a process for which almost every sample path belongs to $BV(0,T)\cap C([0,T])$, and let $Y\in\mathbb{L}^2(0,T)$. Then
+    \begin{equation*}
+        \braket{X,Y}_t = 0 \quad\text{a.s. for all } t\in [0,T].
+    \end{equation*}
+    [\emph{Hint}: Cauchy-Schwarz.]
+\end{enumerate}
+\end{exercise}
+
+Exercise~\ref{exer:quad-var-BV} shows that $\braket{X,Y}_t = \braket{M,N}_t$, and thus our problem is reduced to the computation of the cross-variation of two It\^{o} integrals.
+\begin{proposition}
+\label{prop:quad-var-ito-int}
+    For any process $F\in\mathbb{L}^2(0,T)$, the process $X_t:=\int_0^t F\,dW$ has quadratic variation
+    \begin{equation}
+    \label{eq:quad-var-ito-int}
+        \braket{X}_t = \int_0^t F_s^2\,d\braket{W}_s = \int_0^t F_s^2\,ds \quad\text{on } [0,t]
+    \end{equation}
+    for every $t\in [0,T]$.
+\end{proposition}
+
+A complete proof of Proposition~\ref{prop:quad-var-ito-int} is rather involved, since we need to establish that the quadratic variation actually exists for a general continuous martingale. Although we have the density result of Theorem~\ref{thm:approx-processes}, recall that $\int_0^t F\,dW$ is an object in its own right, so that the problem is not simply a matter of passing a limit under an integral.
+
+We will merely give some indication of why the result is true by verifying the conclusion for elementary processes. If $F\in\mathcal{E}^2(0,T)$ with decomposition
+\begin{equation*}
+    F_t = \sum_{k=1}^n A_{k-1}\mathbf{1}_{(t_{k-1},t_k]}(t)
+\end{equation*}
+on $[0,T]$, we compute
+\begin{align*}
+    I_t(F) = \int_0^t F_s \,dW_s &= \sum_{0\le t_{k-1}<t_k\le t} A_{k-1}(W_{t_k}-W_{t_{k-1}}) \\
+    &= \sum_{k=1}^n A_{k-1}(W_{t_k\wedge t}-W_{t_{k-1}\wedge t}).
+\end{align*}
+Denote $M^{(k)}_t := W_{t_k\wedge t}-W_{t_{k-1}\wedge t}$. Observe that for $t\le t_{k-1}$, we have $M^{(k)}_t=0$, and for $t\ge t_k$, we have $M^{(k)}_t=W_{t_k}-W_{t_{k-1}}$. Hence $M^{(k)}$ is almost surely constant except on the interval $[t_{k-1},t_k]$. Moreover, if $j\ne k$, then $M^{(k)}$ and $M^{(j)}$ are \emph{orthogonal} in the sense that the cross-variation bracket vanishes: $\braket{M^{(k)},M^{(j)}}_t=0$ for all $t\in [0,T]$. This follows from the disjointness of the intervals $[t_{k-1},t_k]$ and the observation that $M^{(k)}$ is constant outside of this interval. Hence we obtain
+\begin{align*}
+    \braket{I(F)}_t &= \bigg\langle \sum_{k=1}^n A_{k-1}M^{(k)} \bigg\rangle_t \\
+    &= \sum_{k=1}^n \braket{A_{k-1}M^{(k)}}_t + 2\sum_{j<k} \braket{A_{j-1}M^{(j)}, A_{k-1}M^{(k)}}_t \\
+    &= \sum_{k=1}^n A_{k-1}^2\braket{M^{(k)}}_t + 2\sum_{j<k} A_{j-1}A_{k-1}\underbrace{\braket{M^{(j)},M^{(k)}}_t}_{=0} = \sum_{k=1}^n A_{k-1}^2\braket{M^{(k)}}_t.
+\end{align*}
+We leave it as a simple exercise to check that
+\begin{equation*}
+    \braket{M^{(k)}}_t = \braket{W_{t_k\wedge(\cdot)}}_t - \braket{W_{t_{k-1}\wedge(\cdot)}}_t = \braket{W}_{t_k\wedge t} - \braket{W}_{t_{k-1}\wedge t}.
+\end{equation*}
+Therefore
+\begin{equation*}
+    \braket{I(F)}_t = \sum_{k=1}^n A_{k-1}^2\left(\braket{W}_{t_k\wedge t} - \braket{W}_{t_{k-1}\wedge t}\right) = \int_0^t F^2\,d\braket{W},
+\end{equation*}
+which is~\eqref{eq:quad-var-ito-int} for elementary processes.
+
+Taking Proposition~\ref{prop:quad-var-ito-int} and some martingale theory as a black box, the proof of the product rule is now straightforward.
+\begin{proof}[Proof of Theorem~\ref{thm:stoch-prod-rule}]
+    We treat the special case where $X=Y$; that is, for $dX=Fdt+GdW$ we establish
+    \begin{equation*}
+        d(X^2) = 2XdX + G^2\,dt.
+    \end{equation*}
+    Recall that this means
+    \begin{equation}
+    \label{eq:dX^2}
+    X^2_t = X^2_0 + 2\int_0^t X\,dX + \int_0^t G^2\,dt \quad\text{for all }t\in [0,T].
+    \end{equation}
+    If $\pi=\{0=t_0<t_1<\ldots <t_n=t\}$ is a partition of $[0,t]$, then observe that
+    \begin{align*}
+        \sum_{k=1}^n (X_{t_k}-X_{t_{k-1}})^2 &= \sum_{k=1}^n [X^2_{t_k}-X^2_{t_{k-1}} - 2X_{t_{k-1}}(X_{t_k}-X_{t_{k-1}})]\\
+        &= X^2_t - X^2_0 - 2\sum_{k=1}^n X_{t_{k-1}}(X_{t_k}-X_{t_{k-1}}).
+    \end{align*}
+    As $\|\pi\|\to 0$, the left hand side converges to $\braket{X}_t = \int_0^t G^2\,dt$ by Proposition~\ref{prop:quad-var-ito-int}. It can also be shown that the sum on the right hand side converges to $\int_0^t X\,dX$. Thus
+    \begin{equation*}
+        \int_0^t G^2\,dt = X^2_t - X^2_0 - 2\int_0^t X\,dX,
+    \end{equation*}
+    and~\eqref{eq:dX^2} is proved.
+
+    The general case follows by the polarisation identity:
+    \begin{align*}
+        d(XY) &= \frac{1}{2}d((X+Y)^2) - \frac{1}{2}d(X^2)-\frac{1}{2}d(Y^2) \\
+        &= (X+Y)d(X+Y) + \frac{1}{2}(G_1+G_2)^2\,dt \\
+        &\qquad\qquad - \left(XdX + \frac{1}{2}G_1^2\,dt\right) - \left(YdY + \frac{1}{2}G_2^2\,dt\right) \\
+        &= XdY + YdX + G_1G_2dt. \qedhere
+    \end{align*}
+\end{proof}
+
+\begin{remark}
+To highlight the important role of quadratic variation in stochastic calculus, we often write
+\begin{equation*}
+    d(XY) = XdY + YdX + d\braket{X,Y}.
+\end{equation*}
+The cross-variation term can then be `expanded', as described above, to produce $d\braket{X,Y}=G_1G_2dt$. This is a good way to remember the stochastic product rule: it is the `usual' product rule plus a `stochastic correction' given by the cross-variation.
+\end{remark}
+
+\subsection{The chain rule: It\^{o}'s formula}
+
+We are now in a position to state and prove the fundamental result of stochastic calculus, the It\^{o} chain rule. It is essential for computations with stochastic processes, but moreover it provides a concrete link between stochastic differential equations (SDE) and partial differential equations (PDE).
+
+A function $u:[0,T]\times\RR\to\RR$ is said to be of class $C^{1,2}([0,T]\times\RR)$ if $u$ is continuous, and the partial derivatives $u_t, u_x, u_{xx}$ exist and are continuous.
+\begin{theorem}
+    Suppose $X$ has stochastic differential
+    \begin{equation*}
+        dX = Fdt + GdW \quad\text{on } [0,T]
+    \end{equation*}
+    for some $F\in\mathbb{L}^1(0,T)$ and $G\in\mathbb{L}^2(0,T)$. Assume that $u\in C^{1,2}([0,T]\times\RR)$. Then the composition $Y_t:= u(t,X_t)$ has the stochastic differential
+    \begin{equation}
+    \label{eq:ito-chain}
+    \begin{aligned}
+        dY &= \frac{\partial u}{\partial t}(t,X_t) dt + \frac{\partial u}{\partial x}(t,X_t) dX + \frac{1}{2}\frac{\partial^2 u}{\partial x^2}(t,X_t) G^2dt \\
+        &= \left(\frac{\partial u}{\partial t}(t,X_t) + \frac{\partial u}{\partial x}(t,X_t) F + \frac{1}{2}\frac{\partial^2 u}{\partial x^2}(t,X_t) G^2\right)dt + \frac{\partial u}{\partial x}(t,X_t) GdW.
+    \end{aligned}
+    \end{equation}
+\end{theorem}
+
+\begin{proof}
+The proof proceeds in three steps.
+
+    \emph{Step 1}: We begin with the case $u(x)=x^m$ for $m\in\NN$. Thus we need to show
+    \begin{equation}
+    \label{eq:dX^m}
+        d(X^m) = mX^{m-1}dX + \frac{1}{2}m(m-1)X^{m-2}G^2\,dt.
+    \end{equation}
+    This is trivial for $m=1$, and the case $m=2$ was proved already in Theorem~\ref{thm:stoch-prod-rule}. The general case follows by induction. Assume that~\eqref{eq:dX^m} holds for some $m\ge 1$. We prove it for $m+1$, using the product rule:
+    \begin{align*}
+        d(X^{m+1}) &= d(X\cdot X^m) \\
+        &= Xd(X^m) + X^m dX + d\braket{X,X^m} \\
+        &= X\left(mX^{m-1}dX + \frac{1}{2}m(m-1)X^{m-2}G^2dt\right) + X^m dX + d\braket{X,X^m} \\
+        &= (m+1)X^m dX + \frac{1}{2}m(m-1)X^{m-1}G^2dt + d\braket{X,X^m}.
+    \end{align*}
+    Since $dX=Fdt+GdW$ and
+    \begin{align*}
+        d(X^m) &= mX^{m-1}(Fdt+GdW) + \frac{1}{2}m(m-1)X^{m-2}G^2dt \\
+        &= (\text{bounded variation part})\,dt + mX^{m-1}GdW,
+    \end{align*}
+    it follows that
+    \begin{equation*}
+        d\braket{X,X^m} = mX^{m-1}G^2dt.
+    \end{equation*}
+    Therefore
+    \begin{align*}
+        d(X^{m+1}) &= (m+1)X^m dX + \left(\frac{1}{2}m(m-1)+m\right)X^{m-1}G^2 dt \\
+        &= (m+1)X^m dX + \frac{1}{2}(m+1)m X^{m-1}G^2 dt,
+    \end{align*}
+    which proves~\eqref{eq:dX^m} for $m+1$.
+
+    Hence It\^{o}'s chain rule is valid for all monomials $x^m$, $m=0,1,2,\ldots$, and consequently it holds for all polynomials by linearity of the $d$ operator.
+
+    \emph{Step 2}: Next, consider functions of the form $u(t,x)=g(t)f(x)$, where $f,g$ are polynomials. We compute
+    \begin{align*}
+        du(t,X_t) &= d(g\cdot f(X)) \\
+        &= f(X)dg + gd(f(X)) \\
+        &= f(X)g'dt + g\left(f'(X)dX + \frac{1}{2}f''(X)G^2dt\right) \\
+        &= \frac{\partial u}{\partial t}(t,X_t)dt + \frac{\partial u}{\partial x}(t,X_t)dX + \frac{1}{2}\frac{\partial^2 u}{\partial x^2}(t,X_t)G^2dt,
+    \end{align*}
+    and thus the It\^{o} chain rule holds for all functions of the form
+    \begin{equation*}
+        u(t,x) = \sum_{i=1}^m g^i(t)f^i(x),
+    \end{equation*}
+    namely, all polynomials in the two variables $t,x$.
+
+    \emph{Step 3}: Given $u\in C^{1,2}([0,T]\times\RR)$, there exists a sequence of polynomials $(u^{(n)})_{n\in\NN}$ in the two variables $(t,x)$ such that
+    \begin{equation*}
+        u^{(n)}\to u, u_t^{(n)}\to u_t, u_x^{(n)}\to u_x, u_{xx}^{(n)}\to u_{xx}
+    \end{equation*}
+    uniformly on compact subsets of $[0,T]\times\RR$. From Step 2, we have
+    \begin{align*}
+        u^{(n)}(s,X_s) - u^{(n)}(0,X_0) &= \int_0^s \left(\frac{\partial u^{(n)}}{\partial t} + \frac{\partial u^{(n)}}{\partial x}F + \frac{1}{2}\frac{\partial^2 u^{(n)}}{\partial x^2}G^2\right) dt\\
+        &\qquad\qquad +\int_0^s \frac{\partial u^{(n)}}{\partial x} G\,dW \quad\text{$\PP$-almost surely},
+    \end{align*}
+    for all $0\le s\le T$, where we have omitted the argument $(t,X_t)$ for brevity. To obtain It\^{o}'s formula in the general case, we need to take $n\to\infty$ in the above identity. \textcolor{red}{(complete later)}
+\end{proof}
+
+We conclude this section by stating the multidimensional generalisation of the It\^{o} formula. We say that a function $u:[0,T]\times\RR^n\to\RR$ is of class $C^{1,2}([0,T]\times\RR^n)$ if $u$ is continuous, $u_t$ exists and is continuous, and all spatial derivatives up to order 2 ($u_{x_i}, u_{x_i x_j}$) exist and are continuous.
+
+\begin{theorem}
+    Let $W=(W^1,\ldots,W^d)$ be a $d$-dimensional Brownian motion, and assume the $\RR^n$-valued process $X=(X^1,\ldots,X^n)$ is given by
+    \begin{equation*}
+        dX = Fdt + GdW,
+    \end{equation*}
+    where $F\in\mathbb{L}^1(0,T;\RR^n)$ and $G\in\mathbb{L}^2(0,T;\RR^{n\times d})$. Then, for every real-valued $u\in C^{1,2}([0,T]\times\RR^n)$, it holds that
+    \begin{equation}
+    \label{eq:multidim-ito}
+        du(t,X_t) = \frac{\partial u}{\partial t}(t,X_t) + [\nabla u](t,X_t)\cdot dX + \frac{1}{2}\tr([D^2u](t,X_t)GG^\top)\,dt
+    \end{equation}
+    where $\nabla u$ and $D^2 u$ denote the gradient vector and Hessian matrix of $u$ respectively.
+\end{theorem}
+
+\begin{remark}
+    The generalised It\^{o} formula provides a direct link between stochastic processes and PDE. Expanding out~\eqref{eq:multidim-ito} and suppressing the argument $(t,X_t)$ yields the expression
+    \begin{align*}
+        du(t,X_t) &= \left(\frac{\partial u}{\partial t} + F\cdot\nabla u + \frac{1}{2}\tr(D^2u GG^\top)\right)dt + \nabla u\cdot GdW \\
+        &= \left(\frac{\partial u}{\partial t} + Lu\right)dt + \nabla u\cdot GdW,
+    \end{align*}
+    where $L$ is the second-order differential operator given by
+    \begin{equation*}
+        Lv := F\cdot\nabla v + \frac{1}{2}\tr(D^2v GG^\top).
+    \end{equation*}
+    In typical applications, $G$ is an invertible matrix, and then $L$ is \emph{uniformly elliptic}.
+
+    In the special case that $X_t=W_t$ (so $F\equiv 0$ and $G=I$, the identity matrix), and $u\in C^2(\RR^n)$ is time independent, we have
+    \begin{equation*}
+        u(W_t) = u(W_0) + \int_0^t \nabla u(W_s)\cdot dW_s + \frac{1}{2}\int_0^t \Delta u(W_s)\,ds,
+    \end{equation*}
+    where $\Delta=\sum_{i=1}^n \frac{\partial^2}{\partial x^2_i}$ is the Laplacian.
+\end{remark}
+
+\begin{example}
+\begin{enumerate}[\upshape (i)]
+    \item Consider the real-valued process given by
+    \begin{equation*}
+        S_t = e^{\sigma W_t-\frac{\sigma^2}{2}t},
+    \end{equation*}
+    where $W$ is a standard one-dimensional Brownian motion and $\sigma>0$ is a constant. This is the product of two processes: $Y_t = e^{\sigma W_t}$ and $A_t=e^{-\frac{\sigma^2}{2}t}$. Note that $dA = -\frac{\sigma^2}{2}A dt$ (in the sense of ordinary calculus). The product rule yields
+    \begin{equation*}
+        dS = d(YA) = YdA + AdY + d\braket{Y,A} = YdA + AdY,
+    \end{equation*}
+    since $\braket{Y,A}=0$ (why?). Then we use the It\^{o} chain rule to calculate
+    \begin{equation*}
+        dY = d(e^{\sigma W}) = \sigma e^{\sigma W}dW + \frac{1}{2}\sigma^2 e^{\sigma W}dt = Y\left(\sigma dW + \frac{\sigma^2}{2}dt\right)
+    \end{equation*}
+    Therefore
+    \begin{align*}
+        dS &= Y\left(-\frac{\sigma^2}{2}A dt\right)dt + AY\left(\sigma dW+\frac{\sigma^2}{2}dt\right) \\
+        &= -\frac{\sigma^2}{2}Sdt + \sigma SdW + \frac{\sigma^2}{2}Sdt = \sigma SdW.
+    \end{align*}
+    We discover that $S$ solves the stochastic differential equation $dS = \sigma SdW$. Observe in particular that the solution is \emph{not} simply given by $e^{\sigma W_t}$.
+
+    \item Let $X$ satisfy the stochastic differential equation $dX = bX dt+\sigma XdW$ on $[0,T]$, where $b\in\RR$ and $\sigma>0$ are constants. Therefore, for all $t\in [0,T]$, we have
+    \begin{equation*}
+        \int_0^t \frac{dX_s}{X_s} = \int_0^t b\,ds + \int_0^t \sigma dW_s = bt + \sigma W_t.
+    \end{equation*}
+    On the other hand, motivated by the term $\frac{dX}{X}$, we compute the following using the It\^{o} formula:
+    \begin{equation*}
+        d(\ln X) = \frac{1}{X}dX - \frac{1}{2}\frac{1}{X^2}(\sigma^2 X^2)dt = \frac{1}{X}dX - \frac{1}{2}\sigma^2 dt,
+    \end{equation*}
+    which by definition means that
+    \begin{equation*}
+        \ln\left(\frac{X_t}{X_0}\right) = \int_0^t \frac{dX_s}{X_s} - \frac{1}{2}\int_0^t \sigma^2 \,dt = \int_0^t \frac{dX_s}{X_s} - \frac{1}{2}\sigma^2 t.
+    \end{equation*}
+    This shows that
+    \begin{equation*}
+        \int_0^t \frac{dX_s}{X_s} = \ln\left(\frac{X_t}{X_0}\right) + \frac{1}{2}\sigma^2 t = bt+\sigma W_t,
+    \end{equation*}
+    and hence, we have found a solution to the original SDE:
+    \begin{equation*}
+        X_t = X_0 \exp\left[\left(b-\frac{1}{2}\sigma^2\right)t + \sigma W_t\right], \quad t\in [0,T].
+    \end{equation*}
+    This represents a very simple model for a stock price with \emph{drift} $b$, \emph{volatility} $\sigma$, and initial price $X_0$.
+\end{enumerate}
+\end{example}
+
+\begin{exercise}
+    \begin{enumerate}[\upshape (i)]
+        \item Derive the product rule using the multidimensional It\^{o} formula with $u(x,y)=xy$.
+
+        \item For a 1-dimensional Brownian motion, prove the identity
+        \begin{equation*}
+            \int_0^t W_s^2 \,dW_s = \frac{1}{3}W^3_t - \int_0^t W_s\,ds.
+        \end{equation*}
+
+        \item Let $W=(W^1,W^2)$ be a 2-dimensional Brownian motion. Compute the stochastic differential of the process $Y_t := |W_t|^2 = (W^1_t)^2+(W^2_t)^2$.
+    \end{enumerate}
+\end{exercise}
+
+\subsection{Supplement: Stratonovich integral}
+\textcolor{red}{(include later)}
