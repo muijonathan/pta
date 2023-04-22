@@ -157,7 +157,23 @@ Exercise~\ref{exer:quad-var-BV} shows that $\braket{X,Y}_t = \braket{M,N}_t$, an
     for every $t\in [0,T]$.
 \end{proposition}
 
-A complete proof of Proposition~\ref{prop:quad-var-ito-int} is rather involved, since we need to establish that the quadratic variation actually exists for a general continuous martingale. Although we have the density result of Theorem~\ref{thm:approx-processes}, recall that $\int_0^t F\,dW$ is an object in its own right, so that the problem is not simply a matter of passing a limit under an integral.
+\begin{corollary}
+	\label{cor:quad-var-ito-int}
+	Let $F,G\in\mathbb{L}^2(0,T)$, and suppose the processes $X,Y$ have the representation
+	\begin{equation*}
+		X_t=X_0 + A_t + \int_0^t F_s\,dW_s \quad\text{and}\quad Y_t=Y_0 + B_t + \int_0^t G_s\,dW_s,
+	\end{equation*}
+	where $A,B$ are processes of bounded variation. Then
+	\begin{equation}
+		\braket{X,Y}_t = \int_0^t F_s G_s \,ds, \qquad t\in [0,T].
+	\end{equation}
+\end{corollary}
+
+\begin{proof}
+	This follows from Exercise~\ref{exer:quad-var-BV}, Proposition~\ref{prop:quad-var-ito-int} and the polarisation identity.
+\end{proof}
+
+A complete proof of Proposition~\ref{prop:quad-var-ito-int} is rather involved, since we need to establish that the quadratic variation actually exists for a general continuous martingale. Although we have the density result of Theorem~\ref{thm:approx-processes}, recall that $\int_0^t F\,dW$ is an object in its own right, so the problem is not simply a matter of passing a limit under an integral.
 
 We will merely give some indication of why the result is true by verifying the conclusion for elementary processes. If $F\in\mathcal{E}^2(0,T)$ with decomposition
 \begin{equation*}

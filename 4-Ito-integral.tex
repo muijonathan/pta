@@ -2,12 +2,12 @@
 
 We are working towards a rigorous understanding of stochastic differential equations of the form
 \begin{equation}
-\label{eq:SDE}
-    dX_t = b(X_t)dt + \sigma(X_t) dW_t
+	\label{eq:SDE-prelim}
+	dX_t = b(t,X_t)dt + \sigma(t,X_t) dW_t
 \end{equation}
-where $b, \sigma : \RR\to\RR$ are deterministic functions, and the `noise term' $dW_t$ intuitively represents an infinitesimal increment of Brownian motion. However, from the previous section, we know that almost all sample paths of Brownian motion are nowhere differentiable, so that $dW_t$ cannot be interpreted in a classical way as $\frac{dW}{dt}$. Nevertheless, if we \emph{formally} integrate equation \eqref{eq:SDE}, we arrive at the expression
+where $b, \sigma : \RR\to\RR$ are deterministic functions, and the `noise term' $dW_t$ intuitively represents an infinitesimal increment of Brownian motion. However, from the previous section, we know that almost all sample paths of Brownian motion are nowhere differentiable, so that $dW_t$ cannot be interpreted in a classical way as $\frac{dW}{dt}$. Nevertheless, if we \emph{formally} integrate equation~\eqref{eq:SDE-prelim}, we arrive at the expression
 \begin{equation}
-    X_t = X_0 + \int_0^t F(X_s) \,ds + \int_0^t \sigma(X_t) \,dW_s.
+	X_t = X_0 + \int_0^t F(X_s) \,ds + \int_0^t \sigma(X_t) \,dW_s.
 \end{equation}
 The object $\int_0^t \sigma(X_s)\,dW_s$ is a \textbf{stochastic integral} with respect to Brownian motion. We will see that such an object is well-defined for a large class of stochastic processes.
 
