@@ -2,6 +2,47 @@
 
 This chapter could have been placed much earlier in these notes (after Chapter 2, for instance). It appears in its current position simply because we wished to give a rather direct approach to stochastic calculus, with minimal development of the general theory of martingales. However, it would be foolish to omit this material, since martingales are such a fundamental part of stochastic analysis. Despite this, the impatient reader could skip ahead to the next chapter on first reading without spoiling the overall story.
 
-We continue with the conventions and notations of the previous two chapters. In particular, we are always working on a filtered probability space, and for convenience, we will assume that the filtration $(\mathcal{F})_{t\ge 0}$ satisfies the usual conditions. In addition, we consider exclusively processes with continuous sample paths.
+We continue with the conventions and notations of the previous two chapters. In particular, we are always working on a filtered probability space, and we will assume that the filtration $(\mathcal{F})_{t\ge 0}$ satisfies the usual conditions. In addition, we consider exclusively processes with \emph{continuous} sample paths.
 
 \subsection{Local martingales}
+
+\begin{definition}
+	Let $0<T\le\infty$. A stochastic process $(X_t)_{t\in [0,T]}$ adapted to $(\mathcal{F}_t)$ is a \textbf{local martingale} if there exists an increasing sequence of stopping times $(\tau_n)_{n\ge 1}$ such that $\tau_n \uparrow T$ and $(M_{t\wedge\tau_n}, \mathcal{F}_t)$ is a martingale for every $n\ge 1$. The notions of \emph{local submartingale} and \emph{local supermartingale} are defined analogously.
+	
+	The sequence $(\tau_n)_{n\ge 1}$ is often called a \textbf{localising sequence}.
+\end{definition}
+
+Local martingales form a fundamental part of the general theory of stochastic processes. It should be noted that every martingale is a local martingale --- indeed, this is exactly the statement of Corollary~\ref{cor:mart-is-local}. The following result describes a special case in which the converse holds.
+
+\begin{theorem}
+	\label{thm:non-neg-loc-mart}
+	Let $(M_t, \mathcal{F}_t)$ be a non-negative (i.e.\ $\PP(M_t\ge 0) = 1$ for all $t\ge 0$) local supermartingale. Then $(M_t, \mathcal{F}_t)$ is a supermartingale. If in addition $\EE M_t = \EE M_0$, then $(M_t, \mathcal{F}_t)$ is a martingale.
+\end{theorem}
+
+\begin{proof}
+	Let $(\tau_n)_{n\ge 1}$ be a localising sequence. By assumption, $(M_{t \wedge\tau_n})$ is a non-negative supermartingale for each $n\ge 1$. By Fatou's lemma, we obtain
+	\begin{equation*}
+		\EE M_t = \EE( \lim_{n\to\infty} M_{t\wedge\tau_n} ) = \EE( \liminf_{n\to\infty} M_{t\wedge\tau_n}) \le \liminf_{n\to\infty} \EE(M_{\tau\wedge\tau_n}) < \infty
+	\end{equation*}
+	for each $t\ge 0$. Now suppose $s<t\le T$. For all $n\ge 1$ such that $t\le \tau_n$, we have 
+	\begin{equation*}
+		\EE (M_{t\wedge\tau_n} | \mathcal{F}_s) = \EE (M_{t\wedge\tau_n} | \mathcal{F}_{s\wedge\tau_n}) \le M_{s\wedge\tau_n}.
+	\end{equation*}
+	by the Doob optional stopping theorem (Theorem~\ref{thm:doob-stop}). Since $t\wedge\tau_n \uparrow t\wedge T=t$ as $n\to\infty$, the conditional Fatou lemma (Exercise~\ref{exer:conditional-Fatou}) implies that
+	\begin{equation*}
+		\EE(M_t | \mathcal{F}_s) = \EE(\liminf_{n\to\infty} M_{t\wedge \tau_n} | \mathcal{F}_s) \le \liminf_{n\to\infty} M_{s\wedge \tau_n} = M_s.
+	\end{equation*}
+	Hence $(M_t)$ is a supermartingale. 
+	
+	Finally, assume that $\EE M_t = \EE M_0$ for all $t \ge 0$. Suppose for contradiction that $(M_t)$ is not a martingale. Then there exist $s<t$ such that $A := \{ \omega\in\Omega : \EE(M_t | \mathcal{F}_s)(\omega) < M_s(\omega) \}$ has positive probability. Since $(M_t)$ is a supermartingale, we have
+	\begin{equation*}
+		\EE M_s \ge \EE[\EE(M_t | \mathcal{F}_s)] = \EE M_t = \EE M_0.
+	\end{equation*}
+	However, since $\PP(A)>0$, we find that the above inequality must be strict. Hence $\EE M_s > \EE M_0$, a contradiction.
+\end{proof}
+
+\begin{remark}
+	The reader should be cautioned that local martingales are a much more general class of stochastic processes. In particular, we do not assume any integrability properties in our definition of local martingale. In fact, there are examples of local martingales with strong integrability properties that fail to be genuine martingales, see~\cite[Chapter V, Exercise 2.13]{RY}. 
+	
+	We also remark that the technique of `localising' a stochastic process with stopping times is an extremely important tool in stochastic analysis.
+\end{remark}

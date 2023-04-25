@@ -17,6 +17,7 @@ We recall some standard analytic tools in this section.
 \end{exercise}
 
 \begin{lemma}[Gr\"{o}nwall inequality]
+\label{lem:gronwall}
 	Let $g:[0,T]\to\RR$ be an integrable function on $[0,T]$ such that
 	\begin{equation*}
 		g(t) \le \alpha(t) + \beta\int_0^t g(s)\,ds \quad\text{for a.e. } t\in [0,T],
@@ -115,6 +116,7 @@ We will prove a global existence and uniqueness result under Lipschitz condition
 \end{assumption}
 
 \begin{theorem}
+\label{thm:SDE-exist-unique}
 	Let Assumption~\ref{SDE-assum} hold, and suppose in addition that $\EE|\xi|^2<\infty$. Then there exists a unique strong solution $X$ to the SDE system~\eqref{eq:SDE} such that almost every sample path $[s,T]\ni t\mapsto X_t\in L^2(\Omega,\mathcal{F},\PP)$ is continuous. Moreover, the solution is global in the sense that the solution exists for all $t\ge s$.
 \end{theorem}
 
@@ -176,3 +178,46 @@ We will prove a global existence and uniqueness result under Lipschitz condition
 	
 	\emph{Step 3}: The solution found in Step 2, which we denote now by $X^{(1)}$, has a `lifetime' of $T_0-s$. Given an arbitrary $T>s$, we can extend the lifetime as follows. Take $\xi=X_{T_0}$ as a new initial condition. By what we have proved above, $\xi$ is square-integrable, and the above arguments can be applied to obtain a solution $X^{(2)}$ on the interval $[T_0,2T_0-s]$. By uniqueness, the solution formed by `gluing together' $X^{(1)}$ and $X^{(2)}$ is indistinguishable from $X^{(1)}$ on the interval $[s,T_0]$, and hence we have a unique solution on $[s,2T_0-s]$. Continuing this way, we obtain a unique solution on $[s,n(T_0-s)+s]$ for all $n\ge 1$, so that the lifetime can be extended until it exceeds $T$.
 \end{proof}
+
+Now we prove the continuous dependence of solutions on the initial data.
+\begin{proposition}
+	\label{prop:cont-dependence-initial}
+	Let $\xi, \eta$ be random variables satisfying $\EE|\xi|^2, \EE|\eta|^2 < \infty$, and let $X(t;s,\xi)$ and $X(t;s,\eta)$ be the unique solutions of~\eqref{eq:SDE} with initial condition $\xi$ and $\eta$ respectively. Then there exists a constant $C$ depending only $s,T,L$ such that
+	\begin{equation}
+		\EE |X(t;s,\xi) - X(t;s,\eta)|^2 \le C \EE|\xi-\eta|^2 \qquad \text{for all } t \in [s, T].
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	The proof is very similar to Step 1 in the proof of Theorem~\ref{thm:SDE-exist-unique}.
+	
+	Let us write $X_t^\xi := X(t;s,\xi)$ and $X_t^\eta := X(t;s,\eta)$, and then take the difference. Using Exercise~\ref{exer:convexity}, we obtain
+	\begin{align*}
+		|X_t^\xi-X_t^\eta|^2 &\le 3|\xi-\eta|^2 + 3\bigg|\int_s^t [b(r,X_r^\xi)-b(r,X_r^\eta)]\,dr\bigg|^2 + 3\bigg|\int_s^t [\sigma(r,X_r^\xi)-\sigma(r,X_r^\eta)]\,dW\bigg|^2 \\
+		&=: 3|\xi-\eta|^2 + 3|I_1(t)|^2 + 3|I_2(t)|^2.
+	\end{align*}
+	We use Cauchy-Schwarz and the Lipschitz property of $b$ to estimate $I_1$:
+	\begin{equation*}
+		|I_1(t)|^2 \le (T-s)\int_s^t |b(r,X_r^\xi)-b(r,X_r^\eta)|^2\,dr \le L^2(T-s)\int_s^t |X_r^\xi-X_r^\eta|^2\,dr.
+	\end{equation*}
+	To handle the stochastic integral, we use the It\^{o} isometry followed by the Lipschitz property:
+	\begin{equation*}
+		\EE|I_2(t)|^2 = 3\int_s^t \|\sigma(r,X_r^\xi)-\sigma(r,X_r^\eta)\|^2\,dr \le 3L\int_s^t \EE|X_r^\xi - X_r^\eta|^2\,dr.
+	\end{equation*}
+	It follows that
+	\begin{align*}
+		\EE|X_t^\xi - X_t^\eta|^2 &\le 3\EE|\xi-\eta|^2 + (3L^2(T-s)+3L)\int_s^T \EE|X_r^\xi - X_r^\eta|^2\,dr \\
+		&=: 3\EE|\xi-\eta|^2 + C\int_s^t \EE|X_r^\xi - X_r^\eta|^2\,dr
+	\end{align*}
+	for all $t\in [s,T]$. By Gronwall's inequality (Lemma~\ref{lem:gronwall}), we conclude
+	\begin{equation*}
+		\EE|X_t^\xi - X_t^\eta|^2 \le 3e^{CT} \EE|\xi-\eta|^2 \qquad\text{for all }t\in [s,T],
+	\end{equation*}
+	which concludes the proof.
+\end{proof}
+
+Observe additionally that
+\begin{equation*}
+	\|X^\xi - X^\eta\|^2_V \le 3e^{CT}\EE|\xi-\eta|^2
+\end{equation*}
+where $V$ is the space introduced in Theorem~\ref{thm:SDE-exist-unique}. This proves the continuity of the map $L^2(\Omega,\mathcal{F},\PP)\ni\xi\mapsto X^\xi \in V$.
