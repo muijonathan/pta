@@ -217,21 +217,27 @@ Martingales have a wide range of applications in mathematical analysis, probabil
 
 An easy but important corollary is the following:
 \begin{corollary}
-\label{cor:mart-is-local}
-Let $(\mathcal{F}_t)_{t \ge 0}$ be a right-continuous filtration, and suppose $(M_t)_{t\ge 0}$ is a continuous martingale adapted to $\mathcal{F}_t$. For any stopping time $\tau$, the \emph{stopped process} $(M^\tau_t)_{t\ge 0}$, defined by
-\begin{equation*}
-    M^\tau_t := M_{t \wedge \tau},
-\end{equation*}
-is an $\mathcal{F}_t$-martingale.
+	\label{cor:mart-is-local}
+	Let $(\mathcal{F}_t)_{t \ge 0}$ be a right-continuous filtration, and suppose $(M_t)_{t\ge 0}$ is a continuous martingale adapted to $\mathcal{F}_t$. For any $\mathcal{F}_t$ stopping time $\tau$ such that $\tau<\infty$ almost surely, the \emph{stopped process} $(M^\tau_t)_{t\ge 0}$, defined by
+	\begin{equation*}
+		M^\tau_t := M_{t \wedge \tau},
+	\end{equation*}
+	is an $\mathcal{F}_t$-martingale.
 \end{corollary}
 
 \begin{proof}
-Let $s < t$. Since $t\wedge\tau$ is a stopping time for all $t\ge 0$, it follows that
-\begin{equation*}
-    \EE(M_{t\wedge\tau} | \mathcal{F}_{s\wedge\tau}) = M_{s\wedge\tau}
-\end{equation*}
-by Theorem~\ref{thm:doob-stop}.
+	Let $s < t$. Since $t\wedge\tau$ is an $\mathcal{F}_t$ stopping time for all $t\ge 0$, it follows that
+	\begin{equation*}
+		\EE(M_{t\wedge\tau} | \mathcal{F}_{s\wedge\tau}) = M_{s\wedge\tau}
+	\end{equation*}
+	by Theorem~\ref{thm:doob-stop}.
 \end{proof}
+
+\begin{exercise}
+	Let $(X_n)$ be a `discrete time' martingale, adapted to the filtration $(\mathcal{F}_n)$, $n\in\NN_0:=\NN\cup\{0\}$. Let $\tau$ be an $\mathcal{F}_n$ stopping time with $\tau<\infty$ almost surely. Give a direct proof that $(X_{\tau\wedge n})$ is an $\mathcal{F}_n$-martingale.
+	
+	\emph{Hint}: consider the decomposition $X_{\tau\wedge n} = \sum_{k=1}^n X_k\mathbf{1}_{(\tau=k)} + X_n\mathbf{1}_{(\tau\ge n+1)}$.
+\end{exercise}
 
 \textcolor{red}{To include: Doob maximal and $L^p$ inequalities}
 
@@ -353,10 +359,24 @@ On the other hand, if $(A_n)_{n\in\NN}$ is a sequence of \emph{independent} even
 \end{proof}
 
 \begin{proposition}[Layer-cake formula]
-    Let $X:\Omega\to\RR$ be a random variable such that $X\ge 0$ $\PP$-almost surely. Then, for all $1\le p<\infty$,
-    \begin{equation}
-        \EE(X) = p\int_0^\infty \lambda^{p-1}\PP(X\ge \lambda)\,d\lambda.
-    \end{equation}
+	\label{prop:layer-cake}
+	Let $X:\Omega\to\RR$ be a random variable such that $X\ge 0$ $\PP$-almost surely. Then, for all $1\le p<\infty$,
+	\begin{equation}
+		\EE(X^p) = p\int_0^\infty \lambda^{p-1}\PP(X\ge \lambda)\,d\lambda.
+	\end{equation}
 \end{proposition}
+
+\begin{proof}
+	By the Fubini-Tonelli theorem, we have
+	\begin{align*}
+		\int_0^\infty \PP(X\ge\lambda)\,d\lambda &= \int_0^\infty \int_\Omega \mathbf{1}_{(X\ge\lambda)}(\omega)\,d\PP(\omega)\,d\lambda \\
+		&= \int_\Omega \int_0^\infty \mathbf{1}_{(X\ge\lambda)}(\omega)\,d\lambda\,d\PP(\omega) \\
+		&= \int_\Omega X(\omega)\,d\PP(\omega) = \EE(X).
+	\end{align*}
+	This proves the proposition for $p=1$. For the general case, we observe that $(X\ge\lambda)=(X^p\ge\lambda^p)$ for all $\lambda\ge 0$. Then we use the change of variables $\lambda^p=t$ to deduce
+	\begin{equation*}
+		\EE(X^p) = \int_0^\infty \PP(X^p\ge t)\,dt = p\int_0^\infty \lambda^{p-1}\PP(X\ge\lambda)\,d\lambda. \qedhere
+	\end{equation*}
+\end{proof}
 
 \textcolor{red}{add more as necessary}
